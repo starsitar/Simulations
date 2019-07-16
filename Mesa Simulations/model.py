@@ -191,17 +191,15 @@ class Beacon_Model(Model):
     def calculate_compromised_groups(self):
     #Calculate compromised groups
         malicious_array = []
-        compromised_count = 0
         total_groups = 0
         for group in self.schedule.agents:
             if group.type == "group":
                 total_groups +=1
                 malicious_array.append(group.malicious_percent) #creates an array of malicious percents for each group
-                if group.compromised_percent >= self.compromised_threshold:
-                    compromised_count +=1
+        
 
         self.median_malicious_group_percents = np.median(malicious_array)
-        self.perc_compromised_groups = compromised_count/(total_groups+0.000000000000000001)
+        self.perc_compromised_groups = sum(np.array(malicious_array)>=self.compromised_threshold)/(total_groups+0.000000000000000001)
 
     def calculate_dominated_signatures(self):
         dominator_array = []

@@ -100,7 +100,7 @@ class Group(Agent):
                 # based on DKG process we check for missing/malicious nodes at stage 11
                 if self.dkg_block_delay >=11:
                     self.offline_percent = self.calculate_offline()/sum(self.ownership_distr) # calculates % nodes offline during dkg
-                    self.compromised_percent = self.malicious_percent + self.offline_percent
+                    self.compromised_percent = self.malicious_percent #+ self.offline_percent
             else:
                 self.status = "active"
         elif self.status == "active":
