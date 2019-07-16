@@ -1,0 +1,23 @@
+# Group & Signature Parameters
+group_size = 100 # number of virtual stakers in a group - nodes to stakers is a 1-many relationship
+nodes = 100 # total number of nodes (assume 1 node = 1 staker)
+active_group_threshold =10 # number of active groups to bootstrap at start
+min_nodes = 40 # min number of nodes that must be online so as to increase the likelihood of lower max ownership
+max_malicious_threshold = 20 # % of malicious node ownership needed to sign
+signature_delay = 2 # lambda for poisson distribution used to generate a delay before the signature is executed
+group_expiry = 14 # number of steps after which a group expires
+Misbehaving_nodes = 10 # percent of nodes misbehaving during dkg
+dkg_block_delay = 14 # blocks needed to run DKG
+compromised_threshold = 0.3 # malicious + offline > threshold = compromised
+failed_signature_threshold = 0.6 # % of offline nodes causing a signature to fail
+
+#Node parameters
+node_failure_percent = 10 # % of times nodes fail and have to reconnect
+node_death_percent = 5 # % of time nodes fail and do not reconnect
+node_connection_delay = 5 # max delay for a node to connect or reconnect after failure
+node_mainloop_connection_delay = 3 # max delay for a node to fork or refork mainloop after failure
+
+#Model Parameters
+log_filename = 'master_sim.log'
+run_number = 0
+steps = 1000 #blocks
