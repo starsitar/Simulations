@@ -151,7 +151,6 @@ class Signature(Agent):
         self.model.newest_signature_id +=1 #increments the signature ID by one after a new signature is created
         self.signature_process_complete = False
         self.block_delay_complete = False
-        self.dominator_id = -1
         self.dominator_percent = 0
         self.offline_percent = 0
         self.signature_failure = False
@@ -187,9 +186,6 @@ class Signature(Agent):
         self.offline_percent = sum(failed_list)/sum(self.ownership_distr)
         self.dominator_percent = (sum(failed_list) + max(self.ownership_distr))/sum(self.group.ownership_distr) # adds the failed node virtual stakers and max node virtual stakers
         self.signature_failure = (sum(failed_list)+max(self.ownership_distr)) > (1-self.model.max_malicious_threshold)
-
-        if self.dominator_percent*100 > self.model.max_malicious_threshold:
-            self.dominator_id = np.argmax(self.ownership_distr)
 
         # calculate misbehaving nodes
     
