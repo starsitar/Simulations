@@ -9,7 +9,7 @@ import numpy as np
 class Beacon_Model(Model):
     """The model"""
     def __init__(self, nodes, ticket_distribution, active_group_threshold, 
-    group_size, max_malicious_threshold, group_expiry, 
+    group_size, max_malicious_threshold_percent, group_expiry, 
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
     log_filename, run_number, misbehaving_nodes, dkg_block_delay, compromised_threshold,
@@ -23,7 +23,7 @@ class Beacon_Model(Model):
         self.num_active_nodes = 0
         self.inactive_nodes = []
         self.active_group_threshold = active_group_threshold # number of groups that will always be maintained in an active state
-        self.max_malicious_threshold = max_malicious_threshold # threshold above which a signature is deemed to be compromised, typically 51%
+        self.max_malicious_threshold_percent = max_malicious_threshold_percent # threshold above which a signature is deemed to be compromised, typically 51%
         self.group_size = group_size
         self.ticket_distribution = ticket_distribution
         self.newest_id = 0
@@ -210,7 +210,7 @@ class Beacon_Model(Model):
             if signature.type == "signature":
                 total_signatures +=1
                 dominator_array.append(signature.dominator_percent)
-                dominator_count += (signature.dominator_percent>=self.max_malicious_threshold)
+                dominator_count += (signature.dominator_percent>=self.max_malicious_threshold_percent)
                 failed_signatures += (signature.offline_percent>=self.failed_signature_threshold)
 
         self.perc_failed_signatures = failed_signatures/(total_signatures+0.00000000000000001)
