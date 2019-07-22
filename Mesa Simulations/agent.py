@@ -146,7 +146,6 @@ class Signature(Agent):
         self.block_delay_complete = False
         self.dominator_percent = 0
         self.offline_percent = 0
-        self.signature_failure = False
 
     def step(self):
         #signature
@@ -178,7 +177,6 @@ class Signature(Agent):
         failed_list = np.array(self.group.ownership_distr)-np.array(self.ownership_distr)
         self.offline_percent = sum(failed_list)/sum(self.group.ownership_distr)
         self.dominator_percent = (sum(failed_list) + max(self.ownership_distr))/sum(self.group.ownership_distr) # adds the failed node virtual stakers and max node virtual stakers
-        self.signature_failure = max(self.ownership_distr) > (1-self.model.max_malicious_threshold_percent)
 
         # calculate misbehaving nodes
     
