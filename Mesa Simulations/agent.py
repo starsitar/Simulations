@@ -21,9 +21,9 @@ class Node(Agent):
         self.connection_delay = np.random.randint(0,node_connection_delay) #uniform randomly assigned connection delay step value
         self.mainloop_fork_delay = np.random.randint(0,node_mainloop_connection_delay) #uniform randomly assigned connection delay step value
         self.timer = self.model.timer
-        self.node_failure_percent = failure_percent
+        self.node_connection_failure_percent = failure_percent
         self.node_death_percent = death_percent
-        self.failure = False
+        self.connection_failure = False
         self.death = False
         self.dkg_misbehaving = False
         self.malicious = np.random.randint (0,100) < misbehaving_nodes  # sets the node as malicious baed on the misbehaving % in model parameters
@@ -41,7 +41,7 @@ class Node(Agent):
                 self.mainloop_status = "forked"
             
         #simulate node failure
-        self.failure = np.random.randint(0,100) < self.node_failure_percent
+        self.connection_failure = np.random.randint(0,100) < self.node_connection_failure_percent
         self.death = np.random.randint (0,100) < self.node_death_percent
 
         #disconnect the node if failure occurs
