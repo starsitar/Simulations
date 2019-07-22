@@ -28,21 +28,21 @@ class Node(Agent):
     
     def step(self):
         #connect to chain
-        if self.connection_delay>0:
-            self.connection_delay -=1
-        else:
-            self.connection_status = "connected"
-            
-        #simulate node failure
-        self.connection_failure = np.random.randint(0,100) < self.node_connection_failure_percent
-        self.death = np.random.randint (0,100) < self.node_death_percent
-
         #disconnect the node if failure occurs
         if self.failure or self.death:
             self.node_disconnect()
+        else:
+            if self.connection_delay>0:
+                self.connection_delay -=1
+            else:
+                self.connection_status = "connected"
+                
+            #simulate node failure
+            self.connection_failure = np.random.randint(0,100) < self.node_connection_failure_percent
+            self.death = np.random.randint (0,100) < self.node_death_percent
 
-        #refresh active nodes list
-        self.model.refresh_connected_nodes_list()
+            #refresh active nodes list
+            self.model.refresh_connected_nodes_list()
 
     def advance(self):
         pass
@@ -176,7 +176,7 @@ class Signature(Agent):
                         temp_signature_distr[i] = node_tickets
         self.ownership_distr = temp_signature_distr
         failed_list = np.array(self.group.ownership_distr)-np.array(self.ownership_distr)
-        self.offline_percent = sum(failed_list)/sum(self.ownership_distr)
+        self.offline_percent = sum(failed_list)/sum(self.group.ownership_distr)
         self.dominator_percent = (sum(failed_list) + max(self.ownership_distr))/sum(self.group.ownership_distr) # adds the failed node virtual stakers and max node virtual stakers
         self.signature_failure = (sum(failed_list)+max(self.ownership_distr)) > (1-self.model.max_malicious_threshold)
 
