@@ -75,7 +75,7 @@ class Group(Agent):
         self.timer = self.model.timer
         self.model.newest_id +=1
         self.model.newest_group_id +=1
-        self.ownership_distr = 0
+        self.ownership_distr = []
         self.malicious_percent = 0
         self.offline_percent = 0
         self.compromised_percent = 0
