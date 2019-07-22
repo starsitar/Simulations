@@ -16,8 +16,6 @@ class Node(Agent):
         self.num_tickets = int(tickets)
         self.ticket_list = []
         self.connection_status = "not connected" #change later to event - currently used for node failure process
-        self.mainloop_status = "not forked"
-        self.stake_status = "not staked"
         self.connection_delay = np.random.randint(0,node_connection_delay) #uniform randomly assigned connection delay step value
         self.mainloop_fork_delay = np.random.randint(0,node_mainloop_connection_delay) #uniform randomly assigned connection delay step value
         self.timer = self.model.timer
@@ -34,11 +32,6 @@ class Node(Agent):
             self.connection_delay -=1
         else:
             self.connection_status = "connected"
-        #once connected fork the main loop
-            if self.mainloop_fork_delay>0:
-                self.mainloop_fork_delay -=1
-            else: 
-                self.mainloop_status = "forked"
             
         #simulate node failure
         self.connection_failure = np.random.randint(0,100) < self.node_connection_failure_percent

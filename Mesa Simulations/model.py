@@ -55,7 +55,7 @@ class Beacon_Model(Model):
              "Failed Singature %" : "perc_failed_signatures" },
             agent_reporters={"Type_ID": lambda x : x.node_id if x.type == "node" else ( x.group_id if x.type == "group" else x.signature_id) , 
             "Type" : "type",
-            "Node Status (Connection_Mainloop_Stake)": lambda x : str(x.connection_status + x.mainloop_status + x.stake_status) if x.type == "node" else None,
+            "Node Status (Connection_Mainloop_Stake)": lambda x : str(x.connection_status) if x.type == "node" else None,
             "Status": lambda x: x.status if x.type == "group" or x.type == "signature" else None, 
             "Malicious": lambda x : x.malicious if x.type == "node" else None,
             "DKG Block Delay" : lambda x : x.dkg_block_delay if x.type =="group" else None,
@@ -179,7 +179,7 @@ class Beacon_Model(Model):
         temp_active_nodes = [] #take out later - id of active nodes
         for agent in self.schedule.agents:
             if agent.type == "node":
-                if agent.mainloop_status == "forked": 
+                if agent.connection_status == "connected": 
                     temp_active_node_list.append(agent) #adds the node to the active list only if it is in the forked state
                     temp_active_nodes.append(agent.node_id)
                 
