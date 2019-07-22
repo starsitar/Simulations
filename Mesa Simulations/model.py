@@ -164,27 +164,25 @@ class Beacon_Model(Model):
             return group_object
 
     def refresh_active_group_list(self):
-        temp_list = []
+        temp_list = {}
 
         for group in self.schedule.agents:
             if group.type == "group":
                 if group.status == "active":
-                    temp_list.append(group)
+                    temp_list[group.id] = group
         self.active_groups = temp_list
 
     def refresh_connected_nodes_list(self):
         log.debug("refreshing active nodes list")
-        temp_active_node_list = []
-        temp_inactive_node_list = []
-        temp_active_nodes = [] #take out later - id of active nodes
+        temp_active_node_list = {}
+        temp_inactive_node_list = {}
         for agent in self.schedule.agents:
             if agent.type == "node":
                 if agent.connection_status == "connected": 
-                    temp_active_node_list.append(agent) #adds the node to the active list only if it is in the forked state
-                    temp_active_nodes.append(agent.node_id)
+                    temp_active_node_list[agent.id] = agent #adds the node to the active list only if it is in the forked state
                 
                 else:
-                    temp_inactive_node_list.append(agent.node_id)
+                    temp_inactive_node_list[agent.id] = agent
         self.active_nodes = temp_active_node_list
         self.inactive_nodes = temp_inactive_node_list
 
