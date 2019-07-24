@@ -32,7 +32,7 @@ class Node(Agent):
         self.death = np.random.randint (0,100) < self.node_death_percent
 
         #disconnect the node if failure occurs
-        if self.connection_failure or self.death:
+        if (self.connection_failure or self.death) and self.connection_status == "connected":
             self.node_disconnect()
         else:
             if self.connection_delay>0:
@@ -55,7 +55,7 @@ class Node(Agent):
         self.connection_status = "not connected"
         try:
             self.model.active_nodes.pop(self.id) # remove from the active nodes list
-        except: print("node not in active list")
+        except: self.model.log.debug("node not in active list")
 
         if self.death == False: # does not reset the failure trigger if the death trigger is true
             self.failure = False
@@ -165,14 +165,11 @@ class Signature(Agent):
     def signature_process(self):
         # Calculates ownership data just before the signature is complete
         temp_signature_distr = np.zeros(self.model.num_nodes)
-        ("Signature ID "+str(self.signature_id)+" performing signature")
 
-        self.model.refresh_connected_nodes_list()
         for i,node_tickets in enumerate(self.group.ownership_distr): # checks if the node has a non-zero ownership, i is the node id
             if node_tickets > 0:
-                for node in self.model.active_nodes:
-                    if node.node_id == i : 
-                        temp_signature_distr[i] = node_tickets
+                if i in self.model.active_nodes:
+                    temp_signature_distr[i] = node_tickets
         self.ownership_distr = temp_signature_distr
         failed_list = np.array(self.group.ownership_distr)-np.array(self.ownership_distr)
         self.offline_percent = sum(failed_list)/sum(self.group.ownership_distr)

@@ -5,6 +5,7 @@ import numpy as np
 from mesa.datacollection import DataCollector
 import logging as log
 import numpy as np
+import random as rnd
 
 class Beacon_Model(Model):
     """The model"""
@@ -67,7 +68,7 @@ class Beacon_Model(Model):
 
         #create log file
         log.basicConfig(filename=log_filename + str(run_number), filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-
+        self.log = log
         print("creating nodes")
         #create nodes
         for i in range(nodes):
@@ -101,11 +102,10 @@ class Beacon_Model(Model):
 
         if self.relay_request:
             try:
-                log.debug('     selecting group at random')
-                try:
-                    # pick an active group from the active group list and create a signature object
-                    signature = agent.Signature(self.newest_id, self.newest_signature_id, self, self.active_groups[np.random.randint(len(self.active_groups))]) 
-                except Exception as e: log.warning(e)
+                print('     selecting group at random')
+                # pick an active group from the active group list and create a signature object
+                signature = agent.Signature(self.newest_id, self.newest_signature_id, self, self.active_groups[rnd.choice(list(self.active_groups))]) 
+            
                 self.schedule.add(signature)
             except:
                 log.debug('     no active groups available')
