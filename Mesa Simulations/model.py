@@ -17,9 +17,9 @@ class Beacon_Model(Model):
         self.num_nodes = nodes
         self.schedule = SimultaneousActivation(self)
         self.relay_request = False
-        self.active_groups = []
+        self.active_groups = {}
         self.num_active_groups = 0
-        self.active_nodes = []
+        self.active_nodes = {}
         self.num_active_nodes = 0
         self.inactive_nodes = []
         self.active_group_threshold = active_group_threshold # number of groups that will always be maintained in an active state
@@ -87,14 +87,13 @@ class Beacon_Model(Model):
         log.debug("Number of nodes in the forked state = " + str(len(self.active_nodes)))
 
         #bootstrap active groups as nodes become available. Can only happen once enough nodes are online
-        temp_bootstrap_groups = []
         if self.bootstrap_complete == False:
             log.debug("bootstrapping active groups")
             if len(self.active_nodes)>=self.group_formation_threshold:
                 for i in range(self.active_group_threshold):
-                    temp_bootstrap_groups.append(self.group_registration())
+                    new_group = self.group_registration()
+                    self.active_groups[new_group.id] = new_group
                 self.bootstrap_complete = True
-            self.active_groups = temp_bootstrap_groups
         
         #generate relay requests
         self.relay_request = np.random.choice([True,False]) # make this variable so it can be what-if'd
@@ -128,7 +127,7 @@ class Beacon_Model(Model):
         self.datacollector.collect(self)
 
     def group_registration(self):
-        ticket_list = []
+        ticket_list = {}
         group_members = []
 
         if len(self.active_nodes)<self.group_formation_threshold: 
@@ -136,20 +135,21 @@ class Beacon_Model(Model):
 
         else:
             # make each active node generate tickets and save them to a list
-            max_tickets = int(max(self.ticket_distribution))
+            counter = 0
             for node in self.active_nodes:
-                adjusted_ticket_list = []
-                node.generate_tickets()
-                adjusted_ticket_list = np.concatenate([node.ticket_list,np.ones(int(max_tickets)-len(node.ticket_list))])  #adds 2's the ends of the list so that the 2D array can have equal length rows
-                ticket_list.append(adjusted_ticket_list)
+                counter +=0.00000001
+                self.active_nodes[node].generate_tickets()
+                # converts the list to a dict with key value as the ticket number + counter and value as node id
+                # adding a counter helps take care of repeated keys
+                temp_ticket_dict = {i : self.active_nodes[node].id for i in (self.active_nodes[node].ticket_list + counter)}
+                ticket_list.update(temp_ticket_dict)
+            
+            # sort the dict and pick n smallest values 
+            group_list = sorted(ticket_list.items())[0:self.group_size]
 
-            #iteratively add group members by lowest value
-            while len(group_members) < self.group_size:
-
-                min_index = np.where(ticket_list == np.min(ticket_list)) # find the index of the minimum value in the array
-                for i,index in enumerate(min_index[0]): #if there are repeated values, iterate through and add the indexes to the group
-                    group_members.append(self.active_nodes[index])
-                    ticket_list[index][min_index[1][i]] = 2 # Set the value of the ticket to a high value so it doesn't get counted again
+            # add create the list of member nodes
+            for node_id in group_list:
+                group_members.append(self.active_nodes[node_id[1]])
             
             #create a group agent which can track expiry, sign, etc
             group_object = agent.Group(self.newest_id, self.newest_group_id, self, group_members, self.group_expiry)
@@ -159,7 +159,7 @@ class Beacon_Model(Model):
             self.schedule.add(group_object)
 
             #add group to active group list
-            self.active_groups.append(group_object)
+            self.active_groups[group_object.id] = group_object
             
             return group_object
 
@@ -185,6 +185,7 @@ class Beacon_Model(Model):
                     temp_inactive_node_list[agent.id] = agent
         self.active_nodes = temp_active_node_list
         self.inactive_nodes = temp_inactive_node_list
+        print(self.active_nodes)
 
     def calculate_compromised_groups(self):
     #Calculate compromised groups

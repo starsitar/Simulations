@@ -27,22 +27,20 @@ class Node(Agent):
         self.malicious = np.random.randint (0,100) < misbehaving_nodes  # sets the node as malicious baed on the misbehaving % in model parameters
     
     def step(self):
-        #connect to chain
+        #simulate node failure
+        self.connection_failure = np.random.randint(0,100) < self.node_connection_failure_percent
+        self.death = np.random.randint (0,100) < self.node_death_percent
+
         #disconnect the node if failure occurs
-        if self.failure or self.death:
+        if self.connection_failure or self.death:
             self.node_disconnect()
         else:
             if self.connection_delay>0:
                 self.connection_delay -=1
             else:
                 self.connection_status = "connected"
+                self.model.active_nodes[self.id] = self # add to the active nodes list
                 
-            #simulate node failure
-            self.connection_failure = np.random.randint(0,100) < self.node_connection_failure_percent
-            self.death = np.random.randint (0,100) < self.node_death_percent
-
-            #refresh active nodes list
-            self.model.refresh_connected_nodes_list()
 
     def advance(self):
         pass
@@ -50,14 +48,15 @@ class Node(Agent):
 
     def generate_tickets(self):
         #generates tickets using the uniform distribution
-        self.stake_status = "staked"
         self.ticket_list = np.random.random_sample(self.num_tickets)
         
     def node_disconnect(self):
         # disconnect the node from the network; causes it to go through the entire reconnection sequence in the next step
         self.connection_status = "not connected"
-        self.mainloop_status = "not forked"
-        self.stake_status = "not staked"
+        try:
+            self.model.active_nodes.pop(self.id) # remove from the active nodes list
+        except: print("node not in active list")
+
         if self.death == False: # does not reset the failure trigger if the death trigger is true
             self.failure = False
 
@@ -96,15 +95,16 @@ class Group(Agent):
                     self.compromised_percent = self.malicious_percent #+ self.offline_percent
             else:
                 self.status = "active"
+                self.model.active_groups[self.id] = self # add to active groups list
         elif self.status == "active":
             """ At each step check if the group has expired """
             self.expiry -=1
             if self.expiry <= 0: 
                 self.status = "expired"
+                try:
+                    self.model.active_groups.pop(self.id)
+                except: print("group not in active list")
 
-
-        # refresh the active group list
-        self.model.refresh_active_group_list()
         
     def advance(self):
         pass
