@@ -14,7 +14,7 @@ class Beacon_Model(Model):
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
     log_filename, run_number, misbehaving_nodes, dkg_block_delay, compromised_threshold,
-    failed_signature_threshold):
+    failed_signature_threshold, node_ownership_params):
         self.num_nodes = nodes
         self.schedule = SimultaneousActivation(self)
         self.relay_request = False
@@ -45,6 +45,9 @@ class Beacon_Model(Model):
         self.total_signatures = 0
         self.failed_signature_threshold = failed_signature_threshold
         self.perc_failed_signatures = 0
+        self.node_ownership_params = node_ownership_params
+        self.owner_buckets = {i : np.random.randint(100)<30 for i in range(10)} 
+        self.owner_buckets[20] =False
         self.datacollector = DataCollector(
             model_reporters = {"# of Active Groups":"num_active_groups",
              "# of Active Nodes":"num_active_nodes",
@@ -63,7 +66,8 @@ class Beacon_Model(Model):
             "Ownership Distribution" : lambda x : x.ownership_distr if x.type =="group" or x.type == "signature" else None,
             "Malicious %" : lambda x : x.malicious_percent if x.type == "group" else None,
             "Offline %" : lambda x : x.offline_percent if x.type == "group" or x.type == "signature" else None,
-            "Dominator %": lambda x : x.dominator_percent if x.type == "signature" else None})
+            "Dominator %": lambda x : x.dominator_percent if x.type == "signature" else None,
+            "Owner": lambda x : x.node_owner if x.type == "node" else None})
 
 
         #create log file
@@ -102,7 +106,7 @@ class Beacon_Model(Model):
 
         if self.relay_request:
             try:
-                print('     selecting group at random')
+                log.debug('     selecting group at random')
                 # pick an active group from the active group list and create a signature object
                 signature = agent.Signature(self.newest_id, self.newest_signature_id, self, self.active_groups[rnd.choice(list(self.active_groups))]) 
             

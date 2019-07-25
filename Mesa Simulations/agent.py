@@ -1,6 +1,7 @@
 from mesa import Agent, Model
 from mesa.time import RandomActivation
 import numpy as np
+import math
 
 class Node(Agent):
     """ Node: One hardware device used to stake tokens on the network. 
@@ -24,8 +25,9 @@ class Node(Agent):
         self.connection_failure = False
         self.death = False
         self.dkg_misbehaving = False
-        self.malicious = np.random.randint (0,100) < misbehaving_nodes  # sets the node as malicious baed on the misbehaving % in model parameters
-    
+        self.node_owner = int((np.random.normal(self.model.node_ownership_params[0], self.model.node_ownership_params[1])+3.5)*15) # picks an owner using the normal distribution and parameters set in the sim
+        self.malicious = self.model.owner_buckets[math.ceil(self.node_owner/10)] # sets the node as malicious if its owner is malicious
+
     def step(self):
         #simulate node failure
         self.connection_failure = np.random.randint(0,100) < self.node_connection_failure_percent
