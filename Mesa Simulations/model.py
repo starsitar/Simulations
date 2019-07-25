@@ -213,7 +213,7 @@ class Beacon_Model(Model):
             if signature.type == "signature":
                 total_signatures +=1
                 dominator_array.append(signature.dominator_percent)
-                dominator_count += (signature.dominator_percent>=self.max_malicious_threshold_percent)
+                dominator_count += (signature.owner_lynchpin_perc>=self.max_malicious_threshold_percent)
                 failed_signatures += (signature.offline_percent>=self.failed_signature_threshold)
 
         self.perc_failed_signatures = failed_signatures/(total_signatures+0.00000000000000001)
