@@ -105,7 +105,7 @@ class Group(Agent):
                 self.status = "expired"
                 try:
                     self.model.active_groups.pop(self.id)
-                except: print("group not in active list")
+                except: self.model.log.debug("group not in active list")
 
         
     def advance(self):
@@ -148,7 +148,7 @@ class Signature(Agent):
         self.block_delay_complete = False
         self.dominator_percent = 0
         self.offline_percent = 0
-        self.owner_lynchpin_perc = 0
+        self.owner_lynchpin_percent = 0
 
     def step(self):
         #signature
@@ -178,12 +178,12 @@ class Signature(Agent):
         self.offline_percent = sum(failed_list)/sum(self.group.ownership_distr)
         self.dominator_percent = (sum(failed_list) + max(self.ownership_distr))/sum(self.group.ownership_distr) # adds the failed node virtual stakers and max node virtual stakers
         
-        # Calculate lynchpin owner
-        #owner_ownership_count = np.zeros(200)
-        #total_tickets = sum(self.ownership_distr)
-        #for i,node_tickets in enumerate(self.ownership_distr):
-        #    owner_ownership_count[self.model.active_nodes[i].node_owner]+=node_tickets
-        #self.owner_lynchpin_perc = max(owner_ownership_count)/total_tickets
+        #Calculate lynchpin owner
+        shares_by_staker = {}
+        total_tickets = sum(self.ownership_distr)
+        for i,node_tickets in enumerate(self.ownership_distr):
+            shares_by_staker[self.model.active_nodes[i].node_owner]+=node_tickets #add tickets to owner shares
+        self.owner_lynchpin_percent = shares_by_staker[max(shares_by_staker)]/total_tickets
 
     
 
