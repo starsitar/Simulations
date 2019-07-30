@@ -46,8 +46,7 @@ class Beacon_Model(Model):
         self.failed_signature_threshold = failed_signature_threshold
         self.perc_failed_signatures = 0
         self.node_ownership_params = node_ownership_params
-        self.owner_buckets = {i : np.random.randint(100)<30 for i in range(10)} 
-        self.owner_buckets[20] =False
+        self.owner_buckets = {i : np.random.randint(100)<30 for i in range(20)} 
         self.datacollector = DataCollector(
             model_reporters = {"# of Active Groups":"num_active_groups",
              "# of Active Nodes":"num_active_nodes",
@@ -140,12 +139,12 @@ class Beacon_Model(Model):
         else:
             # make each active node generate tickets and save them to a list
             counter = 0
-            for node in self.active_nodes:
+            for node_id in self.active_nodes:
                 counter +=0.00000001
-                self.active_nodes[node].generate_tickets()
+                self.active_nodes[node_id].generate_tickets()
                 # converts the list to a dict with key value as the ticket number + counter and value as node id
                 # adding a counter helps take care of repeated keys
-                temp_ticket_dict = {i : self.active_nodes[node].id for i in (self.active_nodes[node].ticket_list + counter)}
+                temp_ticket_dict = {i : node_id for i in (self.active_nodes[node_id].ticket_list + counter)}
                 ticket_list.update(temp_ticket_dict)
             
             # sort the dict and pick n smallest values 
@@ -183,7 +182,7 @@ class Beacon_Model(Model):
         for agent in self.schedule.agents:
             if agent.type == "node":
                 if agent.connection_status == "connected": 
-                    temp_active_node_list[agent.id] = agent #adds the node to the active list only if it is in the forked state
+                    temp_active_node_list[agent.id] = agent #adds the node to the active list only if it is in the connected
                 
                 else:
                     temp_inactive_node_list[agent.id] = agent
@@ -213,7 +212,7 @@ class Beacon_Model(Model):
             if signature.type == "signature":
                 total_signatures +=1
                 dominator_array.append(signature.dominator_percent)
-                dominator_count += (signature.owner_lynchpin_perc>=self.max_malicious_threshold_percent)
+                dominator_count += (signature.dominator_percent>=self.max_malicious_threshold_percent)
                 failed_signatures += (signature.offline_percent>=self.failed_signature_threshold)
 
         self.perc_failed_signatures = failed_signatures/(total_signatures+0.00000000000000001)
