@@ -28,8 +28,6 @@ class Beacon_Model(Model):
         self.group_size = group_size
         self.ticket_distribution = ticket_distribution
         self.newest_id = 0
-        self.newest_group_id = 0
-        self.newest_signature_id = 0
         self.group_expiry = group_expiry
         self.bootstrap_complete = False # indicates when the initial active group list bootstrap is complete
         self.group_formation_threshold = min_nodes # min nodes required to form a group
@@ -56,7 +54,7 @@ class Beacon_Model(Model):
              "Median Dominator %":"median_dominated_signatures_percents",
              "% Dominated signatures":"perc_dominated_signatures",
              "Failed Singature %" : "perc_failed_signatures" },
-            agent_reporters={"Type_ID": lambda x : x.node_id if x.type == "node" else ( x.group_id if x.type == "group" else x.signature_id) , 
+            agent_reporters={"ID": "id" , 
             "Type" : "type",
             "Node Status (Connection_Mainloop_Stake)": lambda x : str(x.connection_status) if x.type == "node" else None,
             "Status": lambda x: x.status if x.type == "group" or x.type == "signature" else None, 
@@ -107,7 +105,7 @@ class Beacon_Model(Model):
             try:
                 log.debug('     selecting group at random')
                 # pick an active group from the active group list and create a signature object
-                signature = agent.Signature(self.newest_id, self.newest_signature_id, self, self.active_groups[rnd.choice(list(self.active_groups))]) 
+                signature = agent.Signature(self.newest_id, self, self.active_groups[rnd.choice(list(self.active_groups))]) 
             
                 self.schedule.add(signature)
             except:
@@ -155,7 +153,7 @@ class Beacon_Model(Model):
                 group_members.append(self.active_nodes[node_id[1]])
             
             #create a group agent which can track expiry, sign, etc
-            group_object = agent.Group(self.newest_id, self.newest_group_id, self, group_members, self.group_expiry)
+            group_object = agent.Group(self.newest_id, self, group_members, self.group_expiry)
 
 
             #add group to schedule

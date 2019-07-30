@@ -64,10 +64,9 @@ class Node(Agent):
 
 class Group(Agent):
     """ A Group """
-    def __init__(self, unique_id, group_id, model, members, expiry):
+    def __init__(self, unique_id, model, members, expiry):
         super().__init__(unique_id, model)
         self.id = unique_id
-        self.group_id = group_id
         self.type = "group"
         self.members = members
         self.last_signature = "none"
@@ -75,7 +74,6 @@ class Group(Agent):
         self.expiry = expiry # of steps before expiration
         self.timer = self.model.timer
         self.model.newest_id +=1
-        self.model.newest_group_id +=1
         self.ownership_distr = []
         self.malicious_percent = 0
         self.offline_percent = 0
@@ -133,17 +131,15 @@ class Group(Agent):
     
 
 class Signature(Agent):
-    def __init__(self, unique_id, signature_id, model, group_object):
+    def __init__(self, unique_id, model, group_object):
         super().__init__(unique_id, model)
         self.group = group_object
         self.id = unique_id
-        self.signature_id = signature_id
         self.type = "signature"
         self.status = "started"
         self.delay = np.random.poisson(self.model.signature_delay) #delay between when it is triggered and when it hits the chain
         self.ownership_distr = []
-        self.model.newest_id +=1 # increments the model agent ID by 1 after a new signature is created
-        self.model.newest_signature_id +=1 #increments the signature ID by one after a new signature is created
+        self.model.newest_id +=1 # increments the model agent ID by 1 after a new signature is created 
         self.signature_process_complete = False
         self.block_delay_complete = False
         self.dominator_percent = 0
