@@ -123,9 +123,8 @@ class Group(Agent):
     def calculate_offline(self):
         offline_count = 0
         for node in self.members:
-            if node.mainloop_status == "not forked": 
+            if node.mainloop_status == "not connected": 
                 offline_count +=1
-            
         return offline_count
 
     
@@ -165,10 +164,11 @@ class Signature(Agent):
         # Calculates ownership data just before the signature is complete
         temp_signature_distr = np.zeros(self.model.num_nodes)
 
-        for i,node_tickets in enumerate(self.group.ownership_distr): # checks if the node has a non-zero ownership, i is the node id
+        for node_id,node_tickets in enumerate(self.group.ownership_distr): # checks if the node has a non-zero ownership, i is the node id
             if node_tickets > 0:
-                if i in self.model.active_nodes:
-                    temp_signature_distr[i] = node_tickets
+                if node_id in self.model.active_nodes:
+                    print(str(node_id) + " node in active nodes during distr calc")
+                    temp_signature_distr[node_id] = node_tickets
         self.ownership_distr = temp_signature_distr
         failed_list = np.array(self.group.ownership_distr)-np.array(self.ownership_distr)
         self.offline_percent = sum(failed_list)/sum(self.group.ownership_distr)
@@ -177,12 +177,13 @@ class Signature(Agent):
         #Calculate lynchpin owner
         shares_by_staker = {}
         total_tickets = sum(self.ownership_distr)
-        for i,node_tickets in enumerate(self.ownership_distr):
-            try:
-                shares_by_staker[self.model.active_nodes[i].node_owner]+=node_tickets #add tickets to owner shares
-            except:
-                shares_by_staker.update(self.model.active_nodes[i].node_owner : node_tickets)
-                
+        for node_id,node_tickets in enumerate(self.ownership_distr):
+            if node_id in self.model.active_nodes:
+                try:
+                    shares_by_staker[self.model.active_nodes[node_id].node_owner]+=node_tickets #add tickets to owner shares
+                except:
+                    shares_by_staker.update({self.model.active_nodes[node_id].node_owner : node_tickets})
+                    
         self.owner_lynchpin_percent = shares_by_staker[max(shares_by_staker)]/total_tickets
 
     
