@@ -167,7 +167,6 @@ class Signature(Agent):
         for node_id,node_tickets in enumerate(self.group.ownership_distr): # checks if the node has a non-zero ownership, i is the node id
             if node_tickets > 0:
                 if node_id in self.model.active_nodes:
-                    print(str(node_id) + " node in active nodes during distr calc")
                     temp_signature_distr[node_id] = node_tickets
         self.ownership_distr = temp_signature_distr
         failed_list = np.array(self.group.ownership_distr)-np.array(self.ownership_distr)
