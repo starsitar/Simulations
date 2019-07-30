@@ -6,6 +6,7 @@ from mesa.datacollection import DataCollector
 import logging as log
 import numpy as np
 import random as rnd
+import time
 
 class Beacon_Model(Model):
     """The model"""
@@ -226,6 +227,7 @@ def create_cdf(nodes,ticket_distr):
         
         cdf[node]=sum(ticket_distr[0:node+1])
     return cdf
+
 
 
             
