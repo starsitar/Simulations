@@ -178,7 +178,11 @@ class Signature(Agent):
         shares_by_staker = {}
         total_tickets = sum(self.ownership_distr)
         for i,node_tickets in enumerate(self.ownership_distr):
-            shares_by_staker[self.model.active_nodes[i].node_owner]+=node_tickets #add tickets to owner shares
+            try:
+                shares_by_staker[self.model.active_nodes[i].node_owner]+=node_tickets #add tickets to owner shares
+            except:
+                shares_by_staker.update(self.model.active_nodes[i].node_owner : node_tickets)
+                
         self.owner_lynchpin_percent = shares_by_staker[max(shares_by_staker)]/total_tickets
 
     
