@@ -91,8 +91,8 @@ class Group(Agent):
         if self.status == "dkg":
             if self.dkg_block_delay>=0:
                 self.dkg_block_delay -=1 # counts down the block delay
-                # based on DKG process we check for missing/malicious nodes 4 blocks before dkg completes
-                if self.dkg_block_delay == (self.dkg_block_delay - 3):
+                # based on DKG process we check for missing/malicious nodes 3 blocks before dkg completes
+                if self.dkg_block_delay == 3:
                     self.offline_percent = self.calculate_offline()/len(self.members) # calculates % nodes offline during dkg
                     self.compromised_percent = self.malicious_percent #+ self.offline_percent
             else:
@@ -179,11 +179,11 @@ class Signature(Agent):
         self.dominator_percent = (sum(failed_list) + max(self.ownership_distr))/sum(self.group.ownership_distr) # adds the failed node virtual stakers and max node virtual stakers
         
         # Calculate lynchpin owner
-        owner_ownership_count = np.zeros(200)
-        total_tickets = sum(self.ownership_distr)
-        for i,node_tickets in enumerate(self.ownership_distr):
-            owner_ownership_count[self.model.active_nodes[i].node_owner]+=node_tickets
-        self.owner_lynchpin_perc = max(owner_ownership_count)/total_tickets
+        #owner_ownership_count = np.zeros(200)
+        #total_tickets = sum(self.ownership_distr)
+        #for i,node_tickets in enumerate(self.ownership_distr):
+        #    owner_ownership_count[self.model.active_nodes[i].node_owner]+=node_tickets
+        #self.owner_lynchpin_perc = max(owner_ownership_count)/total_tickets
 
     
 
