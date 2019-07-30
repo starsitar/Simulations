@@ -123,7 +123,7 @@ class Group(Agent):
     def calculate_offline(self):
         offline_count = 0
         for node in self.members:
-            if node.mainloop_status == "not connected": 
+            if node.connection_status == "not connected": 
                 offline_count +=1
         return offline_count
 
