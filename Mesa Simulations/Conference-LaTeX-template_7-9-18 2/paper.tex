@@ -106,6 +106,28 @@ thus creating conditions for the group to be compromised.
 
 \section{Model Creation}
 
+\subsection{Key Terms}
+\begin{itemize}
+\item Node: A computational entity with memory and computational power sufficient to to run a 
+keep client
+    
+\item Node Owner: may own 1 or more nodes and can allocate different levels of stake to each node
+    owned
+    
+\item Stake: A bond that make a node eligible to participate in a group 
+    
+\item Group: A collection of nodes who have successfully completed DKG together
+    
+\item DKG (Distributed Key Generation): The processes of generating keys for each node enabling
+    them to sign using Keep's version of Threshold ECDSA \cite{Gennaro2018}.
+    
+\item Signature: The process of securely generating a random number using Threshold ECDSA \cite{Gennaro2018}
+    
+\item Ownership Percent: The level of ownership a specific entity has in a group or signature
+    
+\item Lynchpin: A node who's ownership exceeds the maximum malicious threshold
+\end{itemize}
+
 \subsection{Model Structure}
 We construct the model using the MESA ABM framework (cite). MESA consists of an agent class with
 attributes and methods. We generate 3 types of agents Nodes, Groups, and Signatures. TABLE shows 
@@ -119,40 +141,42 @@ is updated. The scheduler manages the sequence of state changes. For this model 
 a simulataneous activation scheduler, which first stages updates for each agent and then 
 advances them simultaneously.  (NEED TO CHECK SCHEDULER SEQUENCE AGAIN)
 
-\subsection{Terminology}
-Node: A computational entity with memory and computational power sufficient to to run a 
-keep client
-
-Node Owner: may own 1 or more nodes and can allocate different levels of stake to each node
-owned
-
-Stake: A bond that make a node eligible to participate in a group 
-
-Group: A collection of nodes who have successfully completed DKG together
-
-DKG (Distributed Key Generation): The processes of generating keys for each node enabling
-them to sign using Keep's version of Threshold ECDSA \cite{Gennaro2018}.
-
-Signature: The process of securely generating a random number using Threshold ECDSA \cite{Gennaro2018}
-
-Ownership Percent: The level of ownership a specific entity has in a group or signature
-
-Lynchpin: A node who's ownership exceeds the maximum malicious threshold
+Usually steps measure a change in time. Therefore for our simulation we assume
+1 step = 1 block.
 
 \subsection{Runs}
+We perform two sets of experiments to answer our research questions. 
 \begin{itemize}
 
-\item Single run
-\item Multiple runs
+\item Single run: Our single run of 1000 steps provide a first look at the 
+performance of the sim, quickly. We also use this first experiment to evaluate
+when steady state behavior could occur. We also perform some initial evaluations
+of the impact of different stake distributions.
+
+\item Multiple runs: The second experiment consists of multiple runs with varying 
+parameters. For each change in parameter we perform 6 runs. By varying parameters 
+in these runs we attempt to identify sensitivity. We measure this sensitivity after
+the start of steady state behavior which we identify in the single run. 
     
 \end{itemize}
 
 \subsection{Assumptions}
+
+\textit{Stochastic Assumptions}
+To simplify the model we make stochastic assumptions for exogenous processes.
+
 \begin{itemize}
-\item Stochastic Assumptions
-\item Ticket distribution Assumptions
-\item Model Assumptions
+
+\item Node Connection Delay: We apply a random uniform distribution to a user specified range (NEED JUSTIFICATION OR A JUSTIFIED SAMPLING)
+\item Node Connection Failure: This is one of the parameters we intend to adjust to test for sensitivity. Therefore we
+randomly pick a percentage of nodes to fail using a uniform distribution.
+\item Node Death: We uniform randomly pick nodes to die at a user specified rate.
+\item Signature Delay: A delay between when a signature is triggered and when it is executed. We use a poisson distribution. (NEED JUSTIFICATION or REFERENCE)
+\item Node Owner Assignment: We use a normal distribution to assign owners to nodes. (NEED JUSTIFICATION)
 \end{itemize}
+
+\textit{Ticket distribution} Assumptions
+Model Assumptions
     
 \section{Verification and Validation}
 Benchmark using analytical methods - from Promethea
