@@ -163,6 +163,7 @@ the start of steady state behavior which we identify in the single run.
 \subsection{Assumptions}
 
 \textit{Stochastic Assumptions}
+
 To simplify the model we make stochastic assumptions for exogenous processes.
 
 \begin{itemize}
@@ -175,18 +176,62 @@ randomly pick a percentage of nodes to fail using a uniform distribution.
 \item Node Owner Assignment: We use a normal distribution to assign owners to nodes. (NEED JUSTIFICATION)
 \end{itemize}
 
-\textit{Ticket distribution} Assumptions
+\textit{Stake distribution} 
+
+Since one of our research questions involves understanding the effects of centralization
+on system behavior, we use three different token distribution models with 
+varying degrees of decentraliation to evaluate this impact. 
+
+\begin{itemize}
+\item Linear Distribution: We assume a simple linear distribution as our most 
+decentralized case. We take 50000 stakes and allocate them linearly to 100 nodes
+as shown in Figure \ref{fig:linear_distribution}
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{linear.png}
+    \caption{Linear Stage Distribution}
+    \label{fig:linear_distribution}
+\end{figure}
+
+\item Ethereum Distribution: In the spectrum of decentralization, we assume 
+ETH to be moderateley decentralized. We therefore take the distribution of the 
+top 30 percent account holders and apply it with some normalization in Figure \ref{fig:eth_distribution}.
+(NEED TO JUSTIFY TOP 30 PERCENT)
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{eth_distribution.png}
+    \caption{Top 30 Percent Ethereum Distribution}
+    \label{fig:eth_distribution}
+\end{figure}
+
+\item Assumed Stake Distribution: Should we disclose?
+\end{itemize}
+
+
+Assumptions
 Model Assumptions
     
 \section{Verification and Validation}
 Benchmark using analytical methods - from Promethea
 
 \section{Results}
+\subsection{Emergence of steady state behavior}
+Using the single run experiment, we discover that steady state behavior
+begins at around 400 blocks. This appears due to the smoothening out of bootstrapping
+effects. (NEED TO CHECK SIM AS STEADY STATE SEEMS TO BE IN FLUX)
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{steady_state.png}
+    \caption{Emergence of Steady State Behavior}
+    \label{fig:steady_state}
+\end{figure}
+
+\subsection{Effects of Node failures on group and signature characteristics}
+
+
 \begin{itemize}
-\item Emergence of steady state behavior
-\item Effects of Node failures on group and signature characteristics
-\item Effects of stake distributions on group and signature characteristics
-\item Additional analyses?
+    \item Effects of stake distributions on group and signature characteristics
+    \item Additional analyses?
 \end{itemize}
 
 \section{Conclusion and Future work}
