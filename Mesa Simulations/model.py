@@ -44,8 +44,7 @@ class Beacon_Model(Model):
         self.total_signatures = 0
         self.failed_signature_threshold = failed_signature_threshold
         self.perc_failed_signatures = 0
-        self.node_ownership_params = node_ownership_params
-        self.owner_buckets = {i : np.random.randint(100)<30 for i in range(20)} 
+        self.number_of_owners = len(ticket_distribution)
         self.datacollector = DataCollector(
             model_reporters = {"# of Active Groups":"num_active_groups",
              "# of Active Nodes":"num_active_nodes",
@@ -71,14 +70,21 @@ class Beacon_Model(Model):
         #create log file
         log.basicConfig(filename=log_filename + str(run_number), filemode='w', format='%(name)s - %(levelname)s - %(message)s')
         self.log = log
+
         print("creating nodes")
         #create nodes
-        for i in range(nodes):
+        for i in range(self.number_of_owners):
+            owner_total_stake = self.ticket_distribution[i]
+
+
             node = agent.Node(i, i, self, 
             self.ticket_distribution[i], 
             node_failure_percent, 
             node_death_percent, 
-            node_connection_delay, node_mainloop_connection_delay, misbehaving_nodes)
+            node_connection_delay, 
+            node_mainloop_connection_delay, 
+            misbehaving_nodes,
+            )
             self.newest_id = i
             self.schedule.add(node)
         self.newest_id +=1
@@ -197,8 +203,7 @@ class Beacon_Model(Model):
             if group.type == "group":
                 total_groups +=1
                 malicious_array.append(group.malicious_percent) #creates an array of malicious percents for each group
-        
-
+        print(malicious_array)
         self.median_malicious_group_percents = np.median(malicious_array)
         self.perc_compromised_groups = sum(np.array(malicious_array)>=self.compromised_threshold)/(total_groups+0.000000000000000001)
 

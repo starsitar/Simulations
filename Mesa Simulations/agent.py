@@ -9,7 +9,7 @@ class Node(Agent):
     the number of tokens owned by the node """
     def __init__(self, unique_id, node_id, model, tickets, 
     failure_percent, death_percent, node_connection_delay,
-    node_mainloop_connection_delay, misbehaving_nodes):
+    node_mainloop_connection_delay, misbehaving_nodes, owner):
         super().__init__(unique_id, model)
         self.id = unique_id
         self.type = "node"
@@ -18,7 +18,6 @@ class Node(Agent):
         self.ticket_list = []
         self.connection_status = "not connected" #change later to event - currently used for node failure process
         self.connection_delay = np.random.randint(0,node_connection_delay) #uniform randomly assigned connection delay step value
-        self.mainloop_fork_delay = np.random.randint(0,node_mainloop_connection_delay) #uniform randomly assigned connection delay step value
         self.timer = self.model.timer
         self.node_connection_failure_percent = failure_percent
         self.node_death_percent = death_percent
@@ -42,11 +41,9 @@ class Node(Agent):
             else:
                 self.connection_status = "connected"
                 self.model.active_nodes[self.id] = self # add to the active nodes list
-                
 
     def advance(self):
         pass
-
 
     def generate_tickets(self):
         #generates tickets using the uniform distribution
@@ -98,6 +95,7 @@ class Group(Agent):
                 self.model.active_groups[self.id] = self # add to active groups list
         elif self.status == "active":
             """ At each step check if the group has expired """
+            self.calculate_malicious_percent #calculate the current malicious percent
             self.expiry -=1
             if self.expiry <= 0: 
                 self.status = "expired"
@@ -119,6 +117,13 @@ class Group(Agent):
         self.malicious_percent = temp_malicious_count/sum(temp_distr)
         self.ownership_distr = temp_distr
 
+    def calculate_malicious_percent(self):
+        temp_malicious_count = 0
+        for node in self.members:    
+            if node.malicious:
+                temp_malicious_count +=1
+        self.malicious_percent = temp_malicious_count/sum(self.ownership_distr)
+
 
     def calculate_offline(self):
         offline_count = 0
@@ -126,8 +131,7 @@ class Group(Agent):
             if node.connection_status == "not connected": 
                 offline_count +=1
         return offline_count
-
-    
+   
 
 class Signature(Agent):
     def __init__(self, unique_id, model, group_object):
