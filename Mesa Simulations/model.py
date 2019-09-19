@@ -14,8 +14,8 @@ class Beacon_Model(Model):
     group_size, max_malicious_threshold_percent, group_expiry, 
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
-    log_filename, run_number, misbehaving_nodes, dkg_block_delay, compromised_threshold,
-    failed_signature_threshold, node_ownership_params):
+    log_filename, run_number, dkg_block_delay, compromised_threshold,
+    failed_signature_threshold, node_ownership_params, min_stake_amount, owner_mode):
         self.num_nodes = nodes
         self.schedule = SimultaneousActivation(self)
         self.relay_request = False
@@ -28,7 +28,7 @@ class Beacon_Model(Model):
         self.max_malicious_threshold_percent = max_malicious_threshold_percent # threshold above which a signature is deemed to be compromised, typically 51%
         self.group_size = group_size
         self.ticket_distribution = ticket_distribution
-        self.newest_id = 0
+        self.newest_id = 0 #ID count for agents
         self.group_expiry = group_expiry
         self.bootstrap_complete = False # indicates when the initial active group list bootstrap is complete
         self.group_formation_threshold = min_nodes # min nodes required to form a group
@@ -45,6 +45,7 @@ class Beacon_Model(Model):
         self.failed_signature_threshold = failed_signature_threshold
         self.perc_failed_signatures = 0
         self.number_of_owners = len(ticket_distribution)
+        self.min_stake_amount = min_stake_amount
         self.datacollector = DataCollector(
             model_reporters = {"# of Active Groups":"num_active_groups",
              "# of Active Nodes":"num_active_nodes",
@@ -66,28 +67,37 @@ class Beacon_Model(Model):
             "Dominator %": lambda x : x.dominator_percent if x.type == "signature" else None,
             "Owner": lambda x : x.node_owner if x.type == "node" else None})
 
-
         #create log file
         log.basicConfig(filename=log_filename + str(run_number), filemode='w', format='%(name)s - %(levelname)s - %(message)s')
         self.log = log
 
         print("creating nodes")
         #create nodes
-        for i in range(self.number_of_owners):
-            owner_total_stake = self.ticket_distribution[i]
+        if owner_mode = 1: # owners nodes are proportional to its total stake amt
+            for i in range(self.number_of_owners): 
+                total_owner_nodes = math.floor(self.ticket_distribution[i]/self.min_stake_amount)
+                tickets = min_stake_amount
+                    for j in range(total_owner_nodes)
+                    node = agent.Node(self.newest_id, self, 
+                    tickets, 
+                    node_failure_percent, 
+                    node_death_percent, 
+                    node_connection_delay, 
+                    node_mainloop_connection_delay
+                    )
+                    self.schedule.add(node)
+        elif owner_mode = 2: # 1 node per owner
+            for i in range(self.number_of_owners): 
+                tickets = self.ticket_distribution[i]
+                node = agent.Node(self.newest_id, self, 
+                tickets, 
+                node_failure_percent, 
+                node_death_percent, 
+                node_connection_delay, 
+                node_mainloop_connection_delay
+                )
+                self.schedule.add(node)
 
-
-            node = agent.Node(i, i, self, 
-            self.ticket_distribution[i], 
-            node_failure_percent, 
-            node_death_percent, 
-            node_connection_delay, 
-            node_mainloop_connection_delay, 
-            misbehaving_nodes,
-            )
-            self.newest_id = i
-            self.schedule.add(node)
-        self.newest_id +=1
 
 
     def step(self):
