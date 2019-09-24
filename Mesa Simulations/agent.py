@@ -59,7 +59,7 @@ class Node(Agent):
         if self.death == False: # does not reset the failure trigger if the death trigger is true
             self.failure = False
 
-class Group(Agent):
+class Signing_Group(Agent):
     """ A Group """
     def __init__(self, unique_id, model, members, expiry):
         super().__init__(unique_id, model)

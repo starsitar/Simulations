@@ -178,7 +178,7 @@ class Beacon_Model(Model):
                 group_members.append(self.active_nodes[node_id[1]]) # pick the node with the given ID from the active nodes list
             
             #create a group agent which can track expiry, sign, etc
-            group_object = agent.Group(self.newest_id, self, group_members, self.group_expiry)
+            group_object = agent.Signing_Group(self.newest_id, self, group_members, self.group_expiry)
 
 
             #add group to schedule
