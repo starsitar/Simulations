@@ -11,12 +11,12 @@ import math
 
 class Beacon_Model(Model):
     """The model"""
-    def __init__(self, nodes, ticket_distribution, active_group_threshold, 
+    def __init__(self, ticket_distribution, active_group_threshold, 
     group_size, max_malicious_threshold_percent, group_expiry, 
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
     log_filename, run_number, dkg_block_delay, compromised_threshold,
-    failed_signature_threshold, min_stake_amount, owner_mode, malicious_owners_percent):
+    failed_signature_threshold, min_stake_amount, self_operator_mode, malicious_owners_percent):
         self.num_nodes = 0
         self.schedule = SimultaneousActivation(self)
         self.relay_request = False
@@ -211,7 +211,6 @@ class Beacon_Model(Model):
                     temp_inactive_node_list[agent.id] = agent
         self.active_nodes = temp_active_node_list
         self.inactive_nodes = temp_inactive_node_list
-        print(self.active_nodes)
 
     def calculate_compromised_groups(self):
     #Calculate compromised groups
@@ -221,7 +220,6 @@ class Beacon_Model(Model):
             if group.type == "group":
                 total_groups +=1
                 malicious_array.append(group.malicious_percent) #creates an array of malicious percents for each group
-        print(malicious_array)
         self.median_malicious_group_percents = np.median(malicious_array)
         self.perc_compromised_groups = sum(np.array(malicious_array)>=self.compromised_threshold)/(total_groups+0.000000000000000001)
 
