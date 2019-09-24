@@ -9,7 +9,7 @@ class Node(Agent):
     the number of tokens owned by the node """
     def __init__(self, unique_id, model, tickets, 
     failure_percent, death_percent, node_connection_delay,
-    node_mainloop_connection_delay, owner, malicious):
+    node_mainloop_connection_delay, operator, malicious):
         super().__init__(unique_id, model)
         self.id = unique_id
         self.type = "node"
@@ -23,7 +23,7 @@ class Node(Agent):
         self.connection_failure = False
         self.death = False
         self.dkg_misbehaving = False
-        self.node_owner = owner
+        self.node_operator = operator
         self.malicious = malicious
         self.model.newest_id +=1 # increments the model agent ID
 
