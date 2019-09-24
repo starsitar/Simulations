@@ -11,7 +11,7 @@ import math
 
 class Beacon_Model(Model):
     """The model"""
-    def __init__(self, ticket_distribution, active_group_threshold, 
+    def __init__(self, stake_distribution, active_group_threshold, 
     group_size, max_malicious_threshold_percent, group_expiry, 
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
@@ -28,7 +28,7 @@ class Beacon_Model(Model):
         self.active_group_threshold = active_group_threshold # number of groups that will always be maintained in an active state
         self.max_malicious_threshold_percent = max_malicious_threshold_percent # threshold above which a signature is deemed to be compromised, typically 51%
         self.group_size = group_size
-        self.ticket_distribution = ticket_distribution
+        self.stake_distribution = stake_distribution
         self.newest_id = 0 #ID count for agents
         self.group_expiry = group_expiry
         self.bootstrap_complete = False # indicates when the initial active group list bootstrap is complete
@@ -45,7 +45,7 @@ class Beacon_Model(Model):
         self.total_signatures = 0
         self.failed_signature_threshold = failed_signature_threshold
         self.perc_failed_signatures = 0
-        self.number_of_owners = len(ticket_distribution)
+        self.number_of_owners = len(stake_distribution)
         self.min_stake_amount = min_stake_amount
         self.datacollector = DataCollector(
             model_reporters = {"# of Active Groups":"num_active_groups",
@@ -76,7 +76,7 @@ class Beacon_Model(Model):
         #create nodes
         if owner_mode == 1: # owners nodes are proportional to its total stake amt
             for i in range(self.number_of_owners): 
-                total_owner_nodes = math.floor(self.ticket_distribution[i]/self.min_stake_amount)
+                total_owner_nodes = math.floor(self.stake_distribution[i]/self.min_stake_amount)
                 tickets = min_stake_amount
                 for j in range(total_owner_nodes):
                     malicious = np.random.randint(0,100)<30
@@ -94,7 +94,7 @@ class Beacon_Model(Model):
                     self.num_nodes+=1
         elif owner_mode == 2: # 1 node per owner
             for i in range(self.number_of_owners): 
-                tickets = self.ticket_distribution[i]
+                tickets = self.stake_distribution[i]
                 node = agent.Node(self.newest_id, self, 
                 tickets, 
                 node_failure_percent, 
