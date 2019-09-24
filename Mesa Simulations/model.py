@@ -7,6 +7,7 @@ import logging as log
 import numpy as np
 import random as rnd
 import time
+import math
 
 class Beacon_Model(Model):
     """The model"""
@@ -15,8 +16,8 @@ class Beacon_Model(Model):
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
     log_filename, run_number, dkg_block_delay, compromised_threshold,
-    failed_signature_threshold, node_ownership_params, min_stake_amount, owner_mode):
-        self.num_nodes = nodes
+    failed_signature_threshold, min_stake_amount, owner_mode, malicious_owners_percent):
+        self.num_nodes = 0
         self.schedule = SimultaneousActivation(self)
         self.relay_request = False
         self.active_groups = {}
@@ -73,20 +74,25 @@ class Beacon_Model(Model):
 
         print("creating nodes")
         #create nodes
-        if owner_mode = 1: # owners nodes are proportional to its total stake amt
+        if owner_mode == 1: # owners nodes are proportional to its total stake amt
             for i in range(self.number_of_owners): 
                 total_owner_nodes = math.floor(self.ticket_distribution[i]/self.min_stake_amount)
                 tickets = min_stake_amount
-                    for j in range(total_owner_nodes)
+                for j in range(total_owner_nodes):
+                    malicious = np.random.randint(0,100)<30
+                    print('creating node')
                     node = agent.Node(self.newest_id, self, 
                     tickets, 
                     node_failure_percent, 
                     node_death_percent, 
                     node_connection_delay, 
-                    node_mainloop_connection_delay
+                    node_mainloop_connection_delay,
+                    i,
+                    malicious
                     )
                     self.schedule.add(node)
-        elif owner_mode = 2: # 1 node per owner
+                    self.num_nodes+=1
+        elif owner_mode == 2: # 1 node per owner
             for i in range(self.number_of_owners): 
                 tickets = self.ticket_distribution[i]
                 node = agent.Node(self.newest_id, self, 
@@ -94,9 +100,11 @@ class Beacon_Model(Model):
                 node_failure_percent, 
                 node_death_percent, 
                 node_connection_delay, 
-                node_mainloop_connection_delay
+                node_mainloop_connection_delay,
+                owner
                 )
                 self.schedule.add(node)
+                self.num_nodes+=1
 
 
 
@@ -167,7 +175,7 @@ class Beacon_Model(Model):
 
             # add create the list of member nodes
             for node_id in group_list:
-                group_members.append(self.active_nodes[node_id[1]])
+                group_members.append(self.active_nodes[node_id[1]]) # pick the node with the given ID from the active nodes list
             
             #create a group agent which can track expiry, sign, etc
             group_object = agent.Group(self.newest_id, self, group_members, self.group_expiry)

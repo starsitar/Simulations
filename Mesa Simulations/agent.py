@@ -7,13 +7,12 @@ class Node(Agent):
     """ Node: One hardware device used to stake tokens on the network. 
     Each node will create virtual stakers proportional to
     the number of tokens owned by the node """
-    def __init__(self, unique_id, node_id, model, tickets, 
+    def __init__(self, unique_id, model, tickets, 
     failure_percent, death_percent, node_connection_delay,
-    node_mainloop_connection_delay, misbehaving_nodes, owner):
+    node_mainloop_connection_delay, owner, malicious):
         super().__init__(unique_id, model)
         self.id = unique_id
         self.type = "node"
-        self.node_id = node_id
         self.num_tickets = int(tickets)
         self.ticket_list = []
         self.connection_status = "not connected" #change later to event - currently used for node failure process
@@ -24,8 +23,9 @@ class Node(Agent):
         self.connection_failure = False
         self.death = False
         self.dkg_misbehaving = False
-        self.node_owner = int((np.random.normal(self.model.node_ownership_params[0], self.model.node_ownership_params[1])+3.5)*15) # picks an owner using the normal distribution and parameters set in the sim
-        self.malicious = self.model.owner_buckets[math.ceil(self.node_owner/10)] # sets the node as malicious if its owner is malicious
+        self.node_owner = owner
+        self.malicious = malicious
+        self.model.newest_id +=1 # increments the model agent ID
 
     def step(self):
         #simulate node failure
@@ -78,6 +78,7 @@ class Group(Agent):
         self.process_complete = False
         self.dkg_block_delay = self.model.dkg_block_delay
 
+        self.model.newest_id +=1 # increments the model agent ID by 1 after a new node is created 
         self.calculate_ownership_distr()
 
 
@@ -111,7 +112,7 @@ class Group(Agent):
         temp_distr = np.zeros(self.model.num_nodes)
         temp_malicious_count = 0
         for node in self.members:    
-            temp_distr[node.node_id] +=1 # increments by 1 for each node index everytime it exists in the member list, at each step
+            temp_distr[node.id] +=1 # increments by 1 for each node index everytime it exists in the member list, at each step
             if node.malicious:
                 temp_malicious_count +=1
         self.malicious_percent = temp_malicious_count/sum(temp_distr)
@@ -142,12 +143,13 @@ class Signature(Agent):
         self.status = "started"
         self.delay = np.random.poisson(self.model.signature_delay) #delay between when it is triggered and when it hits the chain
         self.ownership_distr = []
-        self.model.newest_id +=1 # increments the model agent ID by 1 after a new signature is created 
         self.signature_process_complete = False
         self.block_delay_complete = False
         self.dominator_percent = 0
         self.offline_percent = 0
         self.owner_lynchpin_percent = 0
+
+        self.model.newest_id +=1 # increments the model agent ID by 1 after a new signature is created 
 
     def step(self):
         #signature
