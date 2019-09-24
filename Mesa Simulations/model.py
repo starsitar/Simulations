@@ -16,7 +16,7 @@ class Beacon_Model(Model):
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
     log_filename, run_number, dkg_block_delay, compromised_threshold,
-    failed_signature_threshold, min_stake_amount, self_operator_mode, malicious_operator_percent):
+    failed_signature_threshold, min_stake_amount, operator_mode, malicious_operator_percent):
         self.num_nodes = 0
         self.schedule = SimultaneousActivation(self)
         self.relay_request = False
@@ -74,7 +74,7 @@ class Beacon_Model(Model):
 
         print("creating nodes")
         #create nodes
-        if owner_mode == 1: # owners nodes are proportional to its total stake amt
+        if operator_mode == 1: # owners nodes are proportional to its total stake amt
             for i in range(self.number_of_owners): 
                 total_owner_nodes = math.floor(self.stake_distribution[i]/self.min_stake_amount)
                 tickets = min_stake_amount
@@ -87,13 +87,14 @@ class Beacon_Model(Model):
                     node_death_percent, 
                     node_connection_delay, 
                     node_mainloop_connection_delay,
-                    i,
+                    i,# operator
                     malicious
                     )
                     self.schedule.add(node)
                     self.num_nodes+=1
-        elif owner_mode == 2: # 1 node per owner
-            for i in range(self.number_of_owners): 
+        elif operator_mode == 2: # 1 node per owner
+            for i in range(self.number_of_owners):
+                malicious = np.random.randint(0,100)<30 
                 tickets = self.stake_distribution[i]
                 node = agent.Node(self.newest_id, self, 
                 tickets, 
@@ -101,7 +102,8 @@ class Beacon_Model(Model):
                 node_death_percent, 
                 node_connection_delay, 
                 node_mainloop_connection_delay,
-                owner
+                i,# operator
+                malicious
                 )
                 self.schedule.add(node)
                 self.num_nodes+=1
