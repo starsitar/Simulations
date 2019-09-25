@@ -145,7 +145,7 @@ class Signature(Agent):
         self.ownership_distr = []
         self.signature_process_complete = False
         self.block_delay_complete = False
-        self.dominator_percent = 0
+        self.lynchpin_percent = 0
         self.offline_percent = 0
         self.owner_lynchpin_percent = 0
 
@@ -177,7 +177,7 @@ class Signature(Agent):
         self.ownership_distr = temp_signature_distr
         failed_list = np.array(self.group.ownership_distr)-np.array(self.ownership_distr)
         self.offline_percent = sum(failed_list)/sum(self.group.ownership_distr)
-        self.dominator_percent = (sum(failed_list) + max(self.ownership_distr))/sum(self.group.ownership_distr) # adds the failed node virtual stakers and max node virtual stakers
+        self.lynchpin_percent = (sum(failed_list) + max(self.ownership_distr))/sum(self.group.ownership_distr) # adds the failed node virtual stakers and max node virtual stakers
         
         #Calculate lynchpin owner
         shares_by_staker = {}

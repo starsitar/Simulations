@@ -65,7 +65,7 @@ class Beacon_Model(Model):
             "Ownership Distribution" : lambda x : x.ownership_distr if x.type =="group" or x.type == "signature" else None,
             "Malicious %" : lambda x : x.malicious_percent if x.type == "group" else None,
             "Offline %" : lambda x : x.offline_percent if x.type == "group" or x.type == "signature" else None,
-            "Dominator %": lambda x : x.dominator_percent if x.type == "signature" else None,
+            "Dominator %": lambda x : x.lynchpin_percent if x.type == "signature" else None,
             "Owner": lambda x : x.node_operator if x.type == "node" else None})
 
         #create log file
@@ -146,7 +146,7 @@ class Beacon_Model(Model):
 
         #calculate model measurements
         self.calculate_compromised_groups()
-        self.calculate_dominated_signatures()
+        self.calculate_lynchpinned_signatures()
         
         #advance the agents
         self.schedule.step()
@@ -225,21 +225,21 @@ class Beacon_Model(Model):
         self.median_malicious_group_percents = np.median(malicious_array)
         self.perc_compromised_groups = sum(np.array(malicious_array)>=self.compromised_threshold)/(total_groups+0.000000000000000001)
 
-    def calculate_dominated_signatures(self):
-        dominator_array = []
-        dominator_count = 0
+    def calculate_lynchpinned_signatures(self):
+        lynchpin_array = []
+        lynchpin_count = 0
         total_signatures = 0
         failed_signatures = 0
         for signature in self.schedule.agents:
             if signature.type == "signature":
                 total_signatures +=1
-                dominator_array.append(signature.dominator_percent)
-                dominator_count += (signature.dominator_percent>=self.max_malicious_threshold_percent)
+                lynchpin_array.append(signature.lynchpin_percent)
+                lynchpin_count += (signature.lynchpin_percent>=self.max_malicious_threshold_percent)
                 failed_signatures += (signature.offline_percent>=self.failed_signature_threshold)
 
         self.perc_failed_signatures = failed_signatures/(total_signatures+0.00000000000000001)
-        self.median_dominated_signatures_percents = np.median(dominator_array)
-        self.perc_dominated_signatures = dominator_count/(total_signatures+0.00000000000000001)
+        self.median_dominated_signatures_percents = np.median(lynchpin_array)
+        self.perc_dominated_signatures = lynchpin_count/(total_signatures+0.00000000000000001)
         self.total_signatures = total_signatures
 
 
