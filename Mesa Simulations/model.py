@@ -53,8 +53,8 @@ class Beacon_Model(Model):
              "# of Signatures":"total_signatures",
              "Median Malicious Group %": "median_malicious_group_percents",
              "% Compromised Groups": "perc_compromised_groups",
-             "Median Dominator %":"median_dominated_signatures_percents",
-             "% Dominated signatures":"perc_dominated_signatures",
+             "Median Lynchpin %":"median_dominated_signatures_percents",
+             "% Lynchpinned signatures":"perc_dominated_signatures",
              "Failed Singature %" : "perc_failed_signatures" },
             agent_reporters={"ID": "id" , 
             "Type" : "type",
@@ -65,7 +65,7 @@ class Beacon_Model(Model):
             "Ownership Distribution" : lambda x : x.ownership_distr if x.type =="group" or x.type == "signature" else None,
             "Malicious %" : lambda x : x.malicious_percent if x.type == "group" else None,
             "Offline %" : lambda x : x.offline_percent if x.type == "group" or x.type == "signature" else None,
-            "Dominator %": lambda x : x.lynchpin_percent if x.type == "signature" else None,
+            "Lynchpin %": lambda x : x.lynchpin_percent if x.type == "signature" else None,
             "Owner": lambda x : x.node_operator if x.type == "node" else None})
 
         #create log file
@@ -80,7 +80,6 @@ class Beacon_Model(Model):
                 tickets = min_stake_amount
                 for j in range(total_owner_nodes):
                     malicious = np.random.randint(0,100)<30
-                    print('creating node')
                     node = agent.Node(self.newest_id, self, 
                     tickets, 
                     node_failure_percent, 

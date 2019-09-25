@@ -187,7 +187,7 @@ class Signature(Agent):
                 try:
                     shares_by_staker[self.model.active_nodes[node_id].node_owner]+=node_tickets #add tickets to owner shares
                 except:
-                    shares_by_staker.update({self.model.active_nodes[node_id].node_owner : node_tickets})
+                    shares_by_staker.update({self.model.active_nodes[node_id].node_operator : node_tickets})
                     
         self.owner_lynchpin_percent = shares_by_staker[max(shares_by_staker)]/total_tickets
 
