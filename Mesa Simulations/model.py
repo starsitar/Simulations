@@ -66,7 +66,7 @@ class Beacon_Model(Model):
             "Malicious %" : lambda x : x.malicious_percent if x.type == "group" else None,
             "Offline %" : lambda x : x.offline_percent if x.type == "group" or x.type == "signature" else None,
             "Dominator %": lambda x : x.dominator_percent if x.type == "signature" else None,
-            "Owner": lambda x : x.node_owner if x.type == "node" else None})
+            "Owner": lambda x : x.node_operator if x.type == "node" else None})
 
         #create log file
         log.basicConfig(filename=log_filename + str(run_number), filemode='w', format='%(name)s - %(levelname)s - %(message)s')
