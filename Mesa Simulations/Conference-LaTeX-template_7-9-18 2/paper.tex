@@ -217,9 +217,17 @@ Benchmark using analytical methods - from Promethea
 
 \section{Results}
 \subsection{Emergence of steady state behavior}
-Using the single run experiment, we discover that steady state behavior
-begins at around 400 blocks. This appears due to the smoothening out of bootstrapping
-effects. 
+Using the single run experiment, we discover that system stabalizes to steady state
+usually around 400 blocks, usually due to normalization of bootstrapping states. 
+However, final steady state values for the percentage of total groups that are compromised
+appears to vary significantly and is dependent on the degree of concentration in the 
+stake distribution. 
+
+For concentrated distributions such as Ethereum, the steady state level of compromised
+groups appears to vary between 0-100 percent (SHOW), with a tendancy to be either close
+to 0 or close to 100. For distributions with greater spread, such as our hypothetical linear
+distribution, we see steady steat levels within the 60-80 percent band for the given set
+of parameters (NOTE PARAMETER SETTINGS). \ref{fig:steady_state}
 
 \subsection{Convergence pressures}
 The model primarily converges to steady state due to factors such as
