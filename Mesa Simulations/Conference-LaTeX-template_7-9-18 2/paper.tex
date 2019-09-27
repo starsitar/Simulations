@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage{multicol}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
@@ -218,20 +219,13 @@ Benchmark using analytical methods - from Promethea
 \subsection{Emergence of steady state behavior}
 Using the single run experiment, we discover that steady state behavior
 begins at around 400 blocks. This appears due to the smoothening out of bootstrapping
-effects. (NEED TO CHECK SIM AS STEADY STATE SEEMS TO BE IN FLUX)
-
-\begin{figure}
-    \includegraphics[width=\linewidth]{steady_state.png}
-    \caption{Emergence of Steady State Behavior}
-    \label{fig:steady_state}
-\end{figure}
+effects. 
 
 \subsection{Convergence pressures}
 The model primarily converges to steady state due to factors such as
 signature request frequency, node availability, group creation/expiration
 
 \subsection{Effects of Node failures on group and signature characteristics}
-
 
 \begin{itemize}
     \item Effects of stake distributions on group and signature characteristics
@@ -246,6 +240,17 @@ signature request frequency, node availability, group creation/expiration
 \item Additional questions
 \end{itemize}
 
+\newpage
+
+\begin{figure*}[h]
+    \onecolumn
+    \centering
+    \includegraphics[width=\linewidth]{steady_state_behavior.pdf}
+    \caption{Emergence of Steady State Behavior}
+    \label{fig:steady_state}
+\end{figure*}
+
+\newpage
 \bibliographystyle{plain}
 \bibliography{Simulation_paper.bib}
 \end{document}
