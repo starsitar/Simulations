@@ -233,12 +233,16 @@ different parameter levels for different parameter settings.
 \subsection{Convergence pressures}
 
 The model primarily converges to steady state due to factors such as
-signature request frequency, node availability, group creation/expiration, and....
+signature request frequency, node availability, and group creation/expiration. We discuss a few
+steady state values of interest.
 
-\textit{ Steady state active group count:} Groups are generated with every request, and intially
+\textit{Active group count} Groups are generated with every request, and intially
 during the bootstrap phase a set number of groups are generated with available nodes. In the current
-simulation, requests are generated as coin toss at each step. The steady state number of active groups
-is a function of number of new requests and rate of group expiry. Initially we 
+simulation, requests are generated as coin tosses (binomial) at each step. The steady state number of 
+active groups is a function of number of new requests and rate of group expiry. In the current setup, 
+we see the number of active groups converging to 15 after 400 blocks.
+
+
 
 
 \subsection{Effects of Node failures on group and signature characteristics}
@@ -256,7 +260,8 @@ is a function of number of new requests and rate of group expiry. Initially we
 \item Additional questions
 \end{itemize}
 
-\newpage
+\bibliographystyle{plain}
+\bibliography{Simulation_paper.bib}
 
 \begin{figure*}[h]
     \onecolumn
@@ -264,9 +269,7 @@ is a function of number of new requests and rate of group expiry. Initially we
     \includegraphics[width=\linewidth]{steady_state_behavior.pdf}
     \caption{Emergence of Steady State Behavior}
     \label{fig:steady_state}
+    \multicolumn
 \end{figure*}
 
-\newpage
-\bibliographystyle{plain}
-\bibliography{Simulation_paper.bib}
 \end{document}
