@@ -142,26 +142,7 @@ attributes and methods. We generate 3 types of agents Nodes, Groups, and Signatu
 the specific differences in each of these.
 
 ADD table for Agent types
-\begin{table}[htbp]
-    \caption{Node Agent}
-    \begin{center}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \textbf{Key Attributes}&\multicolumn{3}{|c|}{\textbf{Node Agent}} \\
-    \cline{2-4} 
-    \hline
-    Connection Delay & Block delay before a node joins the network\\
-    Ticket List & X\\
-    Connection Failure Percent & X\\
-    Node Percent & X\\
-    Malicousness & X\\
-    Operator  & X\\
-    \hline
-    \multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
-    \end{tabular}
-    \label{table}
-    \end{center}
-    \end{table}
+
 
 Decide whether all parameters should be listed?
 
@@ -293,6 +274,7 @@ multi-run study. We then observe trends in the specific parameters discussed bel
 \bibliographystyle{plain}
 \bibliography{Simulation_paper.bib}
 
+
 \begin{figure*}[h]
     \onecolumn
     \centering
@@ -300,5 +282,28 @@ multi-run study. We then observe trends in the specific parameters discussed bel
     \caption{Emergence of Steady State Behavior}
     \label{fig:steady_state}
 \end{figure*}
+
+\newpage
+\begin{table}[htbp]
+    \caption{Node Agent}
+    \begin{center}
+    \begin{tabular}{|c|c|}
+    \cline{1-2} 
+    \textbf{Key Attributes}&{\textbf{Node Agent}} \\
+    \cline{1-2} 
+    \hline
+    Connection Delay & Delay between when a node is created and when it can join the network \\
+    Ticket List & List of random numbers used to pick the node for participation in a group\\
+    Connection Failure Percent & Likelihood of disconnecting from the network\\
+    Death Percent & Likelihood of going offline and never re-connecting\\
+    Malicousness & determines if a node is considered malicous based on if the operator is malicious\\
+    Operator  & the entity that runs this node\\
+    \hline
+    \textbf{ }&\textbf{Group Agent} \\
+    \multicolumn{2}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
+    \end{tabular}
+    \label{table}
+    \end{center}
+    \end{table}
 
 \end{document}
