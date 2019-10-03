@@ -67,7 +67,6 @@ class Group(Agent):
         self.id = unique_id
         self.type = "group"
         self.members = members
-        self.last_signature = "none"
         self.status = "dkg" # status types: dkg, compromised, active, expired
         self.expiry = expiry # of steps before expiration
         self.timer = self.model.timer
