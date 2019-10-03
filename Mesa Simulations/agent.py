@@ -23,7 +23,6 @@ class Node(Agent):
         self.node_death_percent = death_percent
         self.connection_failure = False
         self.death = False
-        self.dkg_misbehaving = False
         self.node_owner = int((np.random.normal(self.model.node_ownership_params[0], self.model.node_ownership_params[1])+3.5)*15) # picks an owner using the normal distribution and parameters set in the sim
         self.malicious = self.model.owner_buckets[math.ceil(self.node_owner/10)] # sets the node as malicious if its owner is malicious
 
