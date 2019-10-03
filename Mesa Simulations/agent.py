@@ -74,7 +74,6 @@ class Group(Agent):
         self.ownership_distr = []
         self.malicious_percent = 0
         self.offline_percent = 0
-        self.compromised_percent = 0
         self.process_complete = False
         self.dkg_block_delay = self.model.dkg_block_delay
 
@@ -89,7 +88,6 @@ class Group(Agent):
                 # based on DKG process we check for missing/malicious nodes 3 blocks before dkg completes
                 if self.dkg_block_delay == 3:
                     self.offline_percent = self.calculate_offline()/len(self.members) # calculates % nodes offline during dkg
-                    self.compromised_percent = self.malicious_percent #+ self.offline_percent
             else:
                 self.status = "active"
                 self.model.active_groups[self.id] = self # add to active groups list
