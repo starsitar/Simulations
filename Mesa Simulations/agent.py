@@ -18,7 +18,6 @@ class Node(Agent):
         self.ticket_list = []
         self.connection_status = "not connected" #change later to event - currently used for node failure process
         self.connection_delay = np.random.randint(0,node_connection_delay) #uniform randomly assigned connection delay step value
-        self.mainloop_fork_delay = np.random.randint(0,node_mainloop_connection_delay) #uniform randomly assigned connection delay step value
         self.timer = self.model.timer
         self.node_connection_failure_percent = failure_percent
         self.node_death_percent = death_percent
