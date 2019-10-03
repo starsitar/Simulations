@@ -79,6 +79,13 @@ to support the design process and evaluate system state after launch.
 
 Discuss the use of ABM for token engineering. Cite recent papers.
 
+Agent based systems could help evaluate trends in behavior related to
+various system parameters. They may not however, accurateley represent 
+actual system performance. 
+
+Discuss levels of complexity, with citations. Why greater complexity may
+not get you much more insight.
+
 \section{Overview of the Keep Random Beacon}
 The Keep Network random beacon uses a threshold relay simuliar to the one proposed
 by DFINITY and based on the BLS signature scheme \cite{} (NEED CITATION)
@@ -94,13 +101,13 @@ to predict at the design stage. Specifically, process that take several blocks t
 such as DKG that often occur asynchronously can create large swings in values such as number of active
 groups or percentage of compromised groups. 
 
-\subsection{What are the effects of node failures on system behavior?}
+\subsection{How could node failures affect system behavior?}
 Nodes may go offline or fail entireley. Since their participation in groups is critical to the 
 success of the threshold relay, it is important to understand the impact of various levels
 of failure on group characteristics. In particular, failures can result in disproportionate ownership
 of groups which may cause a byzantine fault to occur. 
 
-\subsection{What are the effects of stake distributions on system behavior?}
+\subsection{How could different stake distributions affect system behavior?}
 Stake distributions can also skew ownership of groups and can lead to a byzantine fault. A more
 centralized distribution could once again lead to a greater ownership of groups by a few entities
 thus creating conditions for the group to be compromised. 
@@ -135,6 +142,25 @@ attributes and methods. We generate 3 types of agents Nodes, Groups, and Signatu
 the specific differences in each of these.
 
 ADD table for Agent types
+\begin{table}[htbp]
+    \caption{Agent Types}
+    \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Parameters}&\multicolumn{3}{|c|}{\textbf{Agents}} \\
+    \cline{2-4} 
+    \textbf{ } & \textbf{\textit{Node}}& \textbf{\textit{Group}}& \textbf{\textit{Signature}} \\
+    \hline
+    Unique ID & X & X & X \\
+    \hline
+    \multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
+    \end{tabular}
+    \label{table}
+    \end{center}
+    \end{table}
+
+Decide whether all parameters should be listed?
+
 
 The simulation model consists of the model class which instantiates the various agents
 and steps through the simulation. At each step the state of the model and each agent
@@ -217,18 +243,11 @@ Benchmark using analytical methods - from Promethea
 
 \section{Results}
 \subsection{Emergence of steady state behavior}
-Using the single run experiment, we discover that system stabalizes to steady state
-usually around 400 blocks, usually due to normalization of bootstrapping states. 
+Using the single run experiment, we discover that system consistently appears to 
+stabalizes to steady state usually around 400 blocks, and usually due to normalization of bootstrapping states. 
 However, final steady state values for the percentage of total groups that are compromised
 appears to vary significantly and is dependent on the degree of concentration in the 
 stake distribution. 
-
-For concentrated distributions such as Ethereum, the steady state level of compromised
-groups appears to vary between 0-100 percent (SHOW), with a tendancy to be either close
-to 0 or close to 100. For distributions with greater spread, such as our hypothetical linear
-distribution, we see steady steat levels within the 50-80 percent band for the given set
-of parameters (NOTE PARAMETER SETTINGS) \ref{fig:steady_state}. We expect a similar band but at
-different parameter levels for different parameter settings.
 
 \subsection{Convergence pressures}
 
@@ -242,16 +261,22 @@ simulation, requests are generated as coin tosses (binomial) at each step. The s
 active groups is a function of number of new requests and rate of group expiry. In the current setup, 
 we see the number of active groups converging to 15 after 400 blocks.
 
-\textit{Percent Compromised Groups} Steady state level of percent compromised
-groups appears to 
+\textit{Percent Compromised Groups} For concentrated distributions such as Ethereum, the steady state level of compromised
+groups appears to vary between 0-100 percent (SHOW), with a tendancy to be either close
+to 0 or close to 100. For distributions with greater spread, such as our hypothetical linear
+distribution, we see steady steat levels within the 50-80 percent band for the given set
+of parameters (NOTE PARAMETER SETTINGS) \ref{fig:steady_state}. We expect a similar band but at
+different parameter levels for different parameter settings. (CHECK THIS AGAIN)
 
+\textit{Percent Lynchpinned Signatures}
 
 \subsection{Effects of Node failures on group and signature characteristics}
+To evaluate the possible effects of node failure on group and signature characteristics, we use the
+multi-run study. We then observe trends in the specific parameters discussed below.
 
-\begin{itemize}
-    \item Effects of stake distributions on group and signature characteristics
-    \item Additional analyses?
-\end{itemize}
+
+\subsection{Effects of stake distributions on group and signature characteristics}
+
 
 \section{Conclusion and Future work}
 \begin{itemize}

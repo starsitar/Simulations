@@ -126,9 +126,7 @@ class Group(Agent):
             if node.connection_status == "not connected": 
                 offline_count +=1
         return offline_count
-
     
-
 class Signature(Agent):
     def __init__(self, unique_id, model, group_object):
         super().__init__(unique_id, model)
