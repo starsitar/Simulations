@@ -300,6 +300,21 @@ multi-run study. We then observe trends in the specific parameters discussed bel
     Operator  & the entity that runs this node\\
     \hline
     \textbf{ }&\textbf{Group Agent} \\
+    \hline
+    Members & list of nodes that are members of the group. Nodes can repeat \\
+    Expiry & number of blocks before group expires\\
+    Malicious Percent & percentage of the groups members that are malicious\\
+    Offline Percent & percentage of the groups members that are offline\\
+    DKG Delay & User set delay simulating the distributed key generation process during group creation\\
+    \hline
+    \textbf{ }&\textbf{Signature Agent} \\
+    \hline
+    Group & list of nodes that are members of the group. Nodes can repeat \\
+    Expiry & number of blocks before group expires\\
+    Delay &  user specified time between being triggered and being published on chain\\
+    Offline Percent & percentage of the groups members that are offline at the time of the signature\\
+    Lynchpin operator percent & percent of the group owned by a single operator\\
+    \hline
     \multicolumn{2}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
     \end{tabular}
     \label{table}
