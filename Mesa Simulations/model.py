@@ -7,16 +7,17 @@ import logging as log
 import numpy as np
 import random as rnd
 import time
+import math
 
 class Beacon_Model(Model):
     """The model"""
-    def __init__(self, nodes, ticket_distribution, active_group_threshold, 
+    def __init__(self, stake_distribution, active_group_threshold, 
     group_size, max_malicious_threshold_percent, group_expiry, 
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
-    log_filename, run_number, misbehaving_nodes, dkg_block_delay, compromised_threshold,
-    failed_signature_threshold, node_ownership_params):
-        self.num_nodes = nodes
+    log_filename, run_number, dkg_block_delay, compromised_threshold,
+    failed_signature_threshold, min_stake_amount, operator_mode, malicious_operator_percent):
+        self.num_nodes = 0
         self.schedule = SimultaneousActivation(self)
         self.relay_request = False
         self.active_groups = {}
@@ -27,8 +28,8 @@ class Beacon_Model(Model):
         self.active_group_threshold = active_group_threshold # number of groups that will always be maintained in an active state
         self.max_malicious_threshold_percent = max_malicious_threshold_percent # threshold above which a signature is deemed to be compromised, typically 51%
         self.group_size = group_size
-        self.ticket_distribution = ticket_distribution
-        self.newest_id = 0
+        self.stake_distribution = stake_distribution
+        self.newest_id = 0 #ID count for agents
         self.group_expiry = group_expiry
         self.bootstrap_complete = False # indicates when the initial active group list bootstrap is complete
         self.group_formation_threshold = min_nodes # min nodes required to form a group
@@ -44,16 +45,16 @@ class Beacon_Model(Model):
         self.total_signatures = 0
         self.failed_signature_threshold = failed_signature_threshold
         self.perc_failed_signatures = 0
-        self.node_ownership_params = node_ownership_params
-        self.owner_buckets = {i : np.random.randint(100)<30 for i in range(20)} 
+        self.number_of_owners = len(stake_distribution)
+        self.min_stake_amount = min_stake_amount
         self.datacollector = DataCollector(
             model_reporters = {"# of Active Groups":"num_active_groups",
              "# of Active Nodes":"num_active_nodes",
              "# of Signatures":"total_signatures",
              "Median Malicious Group %": "median_malicious_group_percents",
              "% Compromised Groups": "perc_compromised_groups",
-             "Median Dominator %":"median_dominated_signatures_percents",
-             "% Dominated signatures":"perc_dominated_signatures",
+             "Median Lynchpin %":"median_dominated_signatures_percents",
+             "% Lynchpinned signatures":"perc_dominated_signatures",
              "Failed Singature %" : "perc_failed_signatures" },
             agent_reporters={"ID": "id" , 
             "Type" : "type",
@@ -64,24 +65,48 @@ class Beacon_Model(Model):
             "Ownership Distribution" : lambda x : x.ownership_distr if x.type =="group" or x.type == "signature" else None,
             "Malicious %" : lambda x : x.malicious_percent if x.type == "group" else None,
             "Offline %" : lambda x : x.offline_percent if x.type == "group" or x.type == "signature" else None,
-            "Dominator %": lambda x : x.dominator_percent if x.type == "signature" else None,
-            "Owner": lambda x : x.node_owner if x.type == "node" else None})
-
+            "Lynchpin %": lambda x : x.lynchpin_percent if x.type == "signature" else None,
+            "Owner": lambda x : x.node_operator if x.type == "node" else None})
 
         #create log file
         log.basicConfig(filename=log_filename + str(run_number), filemode='w', format='%(name)s - %(levelname)s - %(message)s')
         self.log = log
+
         print("creating nodes")
         #create nodes
-        for i in range(nodes):
-            node = agent.Node(i, i, self, 
-            self.ticket_distribution[i], 
-            node_failure_percent, 
-            node_death_percent, 
-            node_connection_delay, node_mainloop_connection_delay, misbehaving_nodes)
-            self.newest_id = i
-            self.schedule.add(node)
-        self.newest_id +=1
+        if operator_mode == 1: # owners nodes are proportional to its total stake amt
+            for i in range(self.number_of_owners): 
+                total_owner_nodes = math.floor(self.stake_distribution[i]/self.min_stake_amount)
+                tickets = min_stake_amount
+                for j in range(total_owner_nodes):
+                    malicious = np.random.randint(0,100)<30
+                    node = agent.Node(self.newest_id, self, 
+                    tickets, 
+                    node_failure_percent, 
+                    node_death_percent, 
+                    node_connection_delay, 
+                    node_mainloop_connection_delay,
+                    i,# operator
+                    malicious
+                    )
+                    self.schedule.add(node)
+                    self.num_nodes+=1
+        elif operator_mode == 2: # 1 node per owner
+            for i in range(self.number_of_owners):
+                malicious = np.random.randint(0,100)<30 
+                tickets = self.stake_distribution[i]
+                node = agent.Node(self.newest_id, self, 
+                tickets, 
+                node_failure_percent, 
+                node_death_percent, 
+                node_connection_delay, 
+                node_mainloop_connection_delay,
+                i,# operator
+                malicious
+                )
+                self.schedule.add(node)
+                self.num_nodes+=1
+
 
 
     def step(self):
@@ -120,7 +145,7 @@ class Beacon_Model(Model):
 
         #calculate model measurements
         self.calculate_compromised_groups()
-        self.calculate_dominated_signatures()
+        self.calculate_lynchpinned_signatures()
         
         #advance the agents
         self.schedule.step()
@@ -151,10 +176,10 @@ class Beacon_Model(Model):
 
             # add create the list of member nodes
             for node_id in group_list:
-                group_members.append(self.active_nodes[node_id[1]])
+                group_members.append(self.active_nodes[node_id[1]]) # pick the node with the given ID from the active nodes list
             
             #create a group agent which can track expiry, sign, etc
-            group_object = agent.Group(self.newest_id, self, group_members, self.group_expiry)
+            group_object = agent.Signing_Group(self.newest_id, self, group_members, self.group_expiry)
 
 
             #add group to schedule
@@ -187,7 +212,6 @@ class Beacon_Model(Model):
                     temp_inactive_node_list[agent.id] = agent
         self.active_nodes = temp_active_node_list
         self.inactive_nodes = temp_inactive_node_list
-        print(self.active_nodes)
 
     def calculate_compromised_groups(self):
     #Calculate compromised groups
@@ -197,26 +221,24 @@ class Beacon_Model(Model):
             if group.type == "group":
                 total_groups +=1
                 malicious_array.append(group.malicious_percent) #creates an array of malicious percents for each group
-        
-
         self.median_malicious_group_percents = np.median(malicious_array)
         self.perc_compromised_groups = sum(np.array(malicious_array)>=self.compromised_threshold)/(total_groups+0.000000000000000001)
 
-    def calculate_dominated_signatures(self):
-        dominator_array = []
-        dominator_count = 0
+    def calculate_lynchpinned_signatures(self):
+        lynchpin_array = []
+        lynchpin_count = 0
         total_signatures = 0
         failed_signatures = 0
         for signature in self.schedule.agents:
             if signature.type == "signature":
                 total_signatures +=1
-                dominator_array.append(signature.dominator_percent)
-                dominator_count += (signature.dominator_percent>=self.max_malicious_threshold_percent)
+                lynchpin_array.append(signature.lynchpin_percent)
+                lynchpin_count += (signature.lynchpin_percent>=self.max_malicious_threshold_percent)
                 failed_signatures += (signature.offline_percent>=self.failed_signature_threshold)
 
         self.perc_failed_signatures = failed_signatures/(total_signatures+0.00000000000000001)
-        self.median_dominated_signatures_percents = np.median(dominator_array)
-        self.perc_dominated_signatures = dominator_count/(total_signatures+0.00000000000000001)
+        self.median_dominated_signatures_percents = np.median(lynchpin_array)
+        self.perc_dominated_signatures = lynchpin_count/(total_signatures+0.00000000000000001)
         self.total_signatures = total_signatures
 
 
