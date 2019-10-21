@@ -3,7 +3,6 @@ import numpy as np
 from scipy import stats
 
 
-
 class Beacon_Analysis():
     """Analytical solutions for simulation questions"""
     def __init__(
@@ -16,10 +15,8 @@ class Beacon_Analysis():
 
             # number of members in a group
             group_size,
-            # threshold of the BLS signature:
-            #   producing a signature requires `(max_malicious + 1)` shares
-            #   and tolerates up to `max_malicious` malicious members
-            max_malicious,
+            # threshold of the BLS signature
+            bls_threshold,
 
             # fraction of nodes that are offline at any given moment
             node_failure_probability,
@@ -30,8 +27,17 @@ class Beacon_Analysis():
         self.malicious_virtual_stakers = floor(virtual_stakers * adversary_power)
 
         self.group_size = group_size
-        self.max_malicious = max_malicious
-        self.min_honest = max_malicious + 1
+
+        # the minimum number of shares required for a signature to be produced
+        self.shares_required = bls_threshold + 1
+
+        # the maximum number of members
+        # that can collude without compromising the group
+        self.compromise_threshold = bls_threshold
+
+        # the maximum number of members
+        # that can be absent from signature generation without failure
+        self.failure_threshold = group_size - (self.shares_required)
 
         self.p_failure = node_failure_probability
         self.p_death = node_death_probability
@@ -101,7 +107,8 @@ class Beacon_Analysis():
         # build a custom discrete distribution
         nk = self.g_range()
         pk = self.inactive()
-        dist = stats.rv_discrete(name='inactive', values=(nk, pk))
+        dist = stats.rv_discrete(name='inactive',
+                                 values=(nk, pk))
 
         return dist
 
@@ -110,23 +117,23 @@ class Beacon_Analysis():
         # A group is compromised if the number of malicious members
         # exceeds the maximum number of malicious members:
         #
-        #     n_malicious > max_malicious
+        #     n_malicious > compromise_threshold
         #
         dist = self.malicious_dist()
 
-        return dist.sf(self.max_malicious)
+        return dist.sf(self.compromise_threshold)
 
 
     def sigfail(self):
         # A signature cannot be produced if the number of online members
         # is less than the minimum number of honest members:
         #
-        #     group_size - n_inactive < min_honest
-        #     n_inactive > group_size - min_honest
+        #     group_size - n_inactive < shares_required
+        #     n_inactive > failure_threshold (= group_size - shares_required)
         #
         dist = self.inactive_dist()
 
-        return dist.sf(self.group_size - self.min_honest)
+        return dist.sf(self.failure_threshold)
 
 
     def lynchpinned(self):
@@ -137,29 +144,28 @@ class Beacon_Analysis():
         # but if malicious members withdraw ther contribution,
         # the remaining members fall below the minimum honest number:
         #
-        #     n_inactive <= group_size - min_honest
-        #     (n_inactive + n_malicious) > group_size - min_honest
+        #     n_inactive <= failure_threshold
+        #     (n_inactive + n_malicious) > failure_threshold
         #
-        g = self.group_size
-        h = self.min_honest
-
-        t = g - h
-
         pmf_inactive = self.inactive()
         pmf_malicious = self.malicious()
 
         p_lynchpinned = 0
 
         # for a group to be lynchpinned,
-        # the number of inactive members must be in [0, t]
-        for n_inactive in range(0, t + 1):
+        # the number of inactive members must be in [0, failure_threshold]
+        #
+        # (inactives exceeding the failure threshold
+        #  results in simple signature failure)
+        for n_inactive in range(0, self.failure_threshold + 1):
             p_inactive = pmf_inactive[n_inactive]
 
             # with i inactive members,
             # the number of malicious members m must satisfy:
             #
-            #     (i + m) in [t+1, g]
-            for n_malicious in range(t - n_inactive + 1, g - n_inactive + 1):
+            #     (i + m) in [failure_threshold + 1, group_size]
+            for n_malicious in range(self.failure_threshold + 1 - n_inactive,
+                                     self.group_size - n_inactive + 1):
                 p_malicious = pmf_malicious[n_malicious]
 
                 prob = p_inactive * p_malicious
