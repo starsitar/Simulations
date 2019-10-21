@@ -9,7 +9,7 @@
 \usepackage{xcolor}
 \usepackage{multicol}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+   T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
 \title{A theoretical analysis of the Keep Network random beacon using agent based modeling \\
@@ -101,7 +101,7 @@ to predict at the design stage. Specifically, process that take several blocks t
 such as DKG that often occur asynchronously can create large swings in values such as number of active
 groups or percentage of compromised groups. 
 
-\subsection{How could node failures affect system behavior?}
+\subsection{How could node failures and group sizes affect system behavior?}
 Nodes may go offline or fail entireley. Since their participation in groups is critical to the 
 success of the threshold relay, it is important to understand the impact of various levels
 of failure on group characteristics. In particular, failures can result in disproportionate ownership
@@ -255,12 +255,76 @@ different parameter levels for different parameter settings. (CHECK THIS AGAIN)
 
 \textit{Percent Lynchpinned Signatures}
 
-\subsection{Effects of Node failures on group and signature characteristics}
-To evaluate the possible effects of node failure on group and signature characteristics, we use the
-multi-run study. We then observe trends in the specific parameters discussed below.
+\subsection{Effects of Node failures, Group Size and Stake Distributions}
+To evaluate the possible effects of node failure and stake distributions on group and signature 
+characteristics, we use the multi-run study. We then observe trends in the specific parameters 
+discussed below. We also run each multi run study for each of the three distribitions to study 
+the correlation between the observed trends and the type of stake distribution.
+
+    Using the \textit{linear distribution:} 
+
+        \begin{table}[htbp]
+            \caption{Lynchpinned Signatures}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{Failure}&\multicolumn{3}{|c|}{\textbf{Group Size}} \\
+            \cline{2-4} 
+            \textbf{Percent} & \textbf{\textit{50}}& \textbf{\textit{100}}& \textbf{\textit{150}} \\
+            \hline
+            5 &  0.006065 &  0.000000 &  0.000000 \\
+            \hline
+            10 &  0.071656 &  0.009276 &  0.003985 \\
+            \hline
+            20 &  0.399020 &  0.262837 &  0.177465 \\
+            \hline
+            \end{tabular}
+            \label{lynchpinned_table1}
+            \end{center}
+        \end{table}
+
+        \begin{table}[htbp]
+            \caption{Compromised Groups}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{Failure}&\multicolumn{3}{|c|}{\textbf{Group Size}} \\
+            \cline{2-4} 
+            \textbf{Percent} & \textbf{\textit{50}}& \textbf{\textit{100}}& \textbf{\textit{150}} \\
+            \hline
+            5 &  0.590035 &  0.435403 &  0.407054 \\
+            \hline
+            10 &  0.428957 &  0.710509 &  0.536904 \\
+            \hline
+            20 &  0.557832 &  0.591663 &  0.555565 \\
+            \hline
+            \end{tabular}
+            \label{compromised_table1}
+            \end{center}
+        \end{table}
+
+        \begin{table}[htbp]
+            \caption{Failed Signatures}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{Failure}&\multicolumn{3}{|c|}{\textbf{Group Size}} \\
+            \cline{2-4} 
+            \textbf{Percent} & \textbf{\textit{50}}& \textbf{\textit{100}}& \textbf{\textit{150}} \\
+            \hline
+            5 &  0.0 &  0.0 &  0.0 \\
+            \hline
+            10 &  0.0 &  0.0 &  0.0 \\
+            \hline
+            20 &  0.0 &  0.0 &  0.0 \\
+            \hline
+            \end{tabular}
+            \label{failed_table1}
+            \end{center}
+        \end{table}
 
 
-\subsection{Effects of stake distributions on group and signature characteristics}
+        Using the \textit{Ethereum distribution:} 
 
 
 \section{Conclusion and Future work}
@@ -274,7 +338,7 @@ multi-run study. We then observe trends in the specific parameters discussed bel
 \bibliographystyle{plain}
 \bibliography{Simulation_paper.bib}
 
-
+\newpage
 \begin{figure*}[h]
     \onecolumn
     \centering
@@ -317,7 +381,7 @@ multi-run study. We then observe trends in the specific parameters discussed bel
     \hline
     \multicolumn{2}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
     \end{tabular}
-    \label{table}
+    \label{agent_table}
     \end{center}
     \end{table}
 
