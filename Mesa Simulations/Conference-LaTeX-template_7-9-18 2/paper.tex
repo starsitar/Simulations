@@ -261,9 +261,15 @@ characteristics, we use the multi-run study. We then observe trends in the speci
 discussed below. We also run each multi run study for each of the three distribitions to study 
 the correlation between the observed trends and the type of stake distribution.
 
+\textit{Group Size} in all distributions group size appears to reduce the percentage
+of lynchpinned signatures and compromised groups. why?
+
+\textit{Failure percent}
+
+
     Using the \textit{linear distribution:} 
 
-        \begin{table}[htbp]
+        \begin{table}[h!]
             \caption{Lynchpinned Signatures}
             \begin{center}
             \begin{tabular}{|c|c|c|c|}
@@ -283,7 +289,7 @@ the correlation between the observed trends and the type of stake distribution.
             \end{center}
         \end{table}
 
-        \begin{table}[htbp]
+        \begin{table}[h!]
             \caption{Compromised Groups}
             \begin{center}
             \begin{tabular}{|c|c|c|c|}
@@ -303,7 +309,7 @@ the correlation between the observed trends and the type of stake distribution.
             \end{center}
         \end{table}
 
-        \begin{table}[htbp]
+        \begin{table}[h!]
             \caption{Failed Signatures}
             \begin{center}
             \begin{tabular}{|c|c|c|c|}
@@ -323,10 +329,69 @@ the correlation between the observed trends and the type of stake distribution.
             \end{center}
         \end{table}
 
-
         Using the \textit{Ethereum distribution:} 
+        \begin{table}[h!]
+            \caption{Lynchpinned Signatures}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{Failure}&\multicolumn{3}{|c|}{\textbf{Group Size}} \\
+            \cline{2-4} 
+            \textbf{Percent} & \textbf{\textit{50}}& \textbf{\textit{100}}& \textbf{\textit{150}} \\
+            \hline
+            5 &  0.011012 &  0.000000 &  0.000000 \\
+            \hline
+            10 &  0.073725 &  0.025947 &  0.006042 \\
+            \hline
+            20 &  0.407753 &  0.325947 &  0.203095 \\
+            \hline
+            \end{tabular}
+            \label{lynchpinned_table2}
+            \end{center}
+        \end{table}
+
+        \begin{table}[h!]
+            \caption{Compromised Groups}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{Failure}&\multicolumn{3}{|c|}{\textbf{Group Size}} \\
+            \cline{2-4} 
+            \textbf{Percent} & \textbf{\textit{50}}& \textbf{\textit{100}}& \textbf{\textit{150}} \\
+            \hline
+            5 &  0.592699 &  0.383390 &  0.394198 \\
+            \hline
+            10 &  0.566964 &  0.616098 &  0.683071 \\
+            \hline
+            20 &  0.549456 &  0.526661 &  0.454106 \\
+            \hline
+            \end{tabular}
+            \label{compromised_table2}
+            \end{center}
+        \end{table}
+
+        \begin{table}[h!]
+            \caption{Failed Signatures}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{Failure}&\multicolumn{3}{|c|}{\textbf{Group Size}} \\
+            \cline{2-4} 
+            \textbf{Percent} & \textbf{\textit{50}}& \textbf{\textit{100}}& \textbf{\textit{150}} \\
+            \hline
+            5 &  0.0 &  0.0 &  0.0 \\
+            \hline
+            10 &  0.0 &  0.0 &  0.0 \\
+            \hline
+            20 &  0.0 &  0.0 &  0.0 \\
+            \hline
+            \end{tabular}
+            \label{failed_table2}
+            \end{center}
+        \end{table}
 
 
+\newpage
 \section{Conclusion and Future work}
 \begin{itemize}
 \item Dynamic systems -Transfer functions instead of stochastic representations?
