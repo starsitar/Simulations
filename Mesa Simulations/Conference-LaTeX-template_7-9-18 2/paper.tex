@@ -263,14 +263,23 @@ different parameter levels for different parameter settings. (CHECK THIS AGAIN)
 To evaluate the possible effects of node failure and stake distributions on group and signature 
 characteristics, we use the multi-run study. We then observe trends in the specific parameters 
 discussed below. We also run each multi run study for each of the three distribitions to study 
-the correlation between the observed trends and the type of stake distribution.
+the correlation between the observed trends and the type of stake distribution. Additionally, byzantine
+taking the median measures of each variable, we hope to address the fluctuations due to distributions with
+increased centralization. 
 
 \textit{Group Size} in all distributions group size appears to reduce the percentage
-of lynchpinned signatures and compromised groups. why?
+of lynchpinned signatures and compromised groups. Intuitively this makes since since 
+as we increase the size of a group, we include more group owners who may not be malicious. 
+comment on degree of change?
 
-\textit{Failure percent}
+\textit{Node Failure percent} appears to significantly impact the lynchpinned signature percentage
+but have little to no effect on compromised groups. Why?
 
-
+\textit{Distribution} centralization appears to minimally affect these trends but, it is very likeley
+that the use of the median for each run is the cause of this. We would expect that highly centralized
+distributions would cause fluctuations in these values similar to their effect on the final steady state 
+level. This is primarily due to the ownership of a larger number of nodes by a few operators in highly 
+centralized distributions. 
 
         \begin{table}[h!]
             \caption{Linear Distribution - Lynchpinned Signatures}
@@ -395,12 +404,11 @@ of lynchpinned signatures and compromised groups. why?
 
 \newpage
 \section{Conclusion and Future work}
-\begin{itemize}
-\item Dynamic systems -Transfer functions instead of stochastic representations?
-\item Utility functions
-\item Genetic Algorithms
-\item Additional questions
-\end{itemize}
+This theoretical analysis highlighted possible behaviors of the Keep network beacon. we
+validated the model using some simple analytical methods. However, once the beacon launches
+we can use real data from the network to validate and adjust the model. At this point we can
+then use the model to better investigate future behaviours and causes of behavior. 
+
 
 \bibliographystyle{plain}
 \bibliography{Simulation_paper.bib}
