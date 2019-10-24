@@ -39,8 +39,8 @@ class Beacon_Model(Model):
         self.dkg_block_delay = dkg_block_delay
         self.compromised_threshold = compromised_threshold
         self.median_malicious_group_percents = 0
-        self.median_dominated_signatures_percents = 0
-        self.perc_dominated_signatures = 0
+        self.median_lynchpinned_signatures_percents = 0
+        self.perc_lynchpinned_signatures = 0
         self.perc_compromised_groups = 0
         self.total_signatures = 0
         self.failed_signature_threshold = failed_signature_threshold
@@ -237,8 +237,8 @@ class Beacon_Model(Model):
                 failed_signatures += (signature.offline_percent>=self.failed_signature_threshold)
 
         self.perc_failed_signatures = failed_signatures/(total_signatures+0.00000000000000001)
-        self.median_dominated_signatures_percents = np.median(lynchpin_array)
-        self.perc_dominated_signatures = lynchpin_count/(total_signatures+0.00000000000000001)
+        self.median_lynchpinned_signatures_percents = np.median(lynchpin_array)
+        self.perc_lynchpinned_signatures = lynchpin_count/(total_signatures+0.00000000000000001)
         self.total_signatures = total_signatures
 
 
