@@ -226,18 +226,18 @@ class Beacon_Model(Model):
 
     def calculate_lynchpinned_signatures(self):
         lynchpin_array = []
-        owner_lynchpin_array = []
+        operator_lynchpin_array = []
         lynchpin_count = 0
-        owner_lynchpin_count = 0
+        operator_lynchpin_count = 0
         total_signatures = 0
         failed_signatures = 0
         for signature in self.schedule.agents:
             if signature.type == "signature":
                 total_signatures +=1
                 lynchpin_array.append(signature.owner_lynchpin_percent)
-                owner_lynchpin_array.append(signature.owner_lynchpin_percent)
+                operator_lynchpin_array.append(signature.operator_lynchpin_percent)
                 lynchpin_count += (signature.lynchpin_percent>=self.max_malicious_threshold_percent)
-                owner_lynchpin_count += (signature.owner_lynchpin_percent>=self.max_malicious_threshold_percent)
+                operator_lynchpin_count += (signature.operator_lynchpin_percent>=self.max_malicious_threshold_percent)
                 failed_signatures += (signature.offline_percent>=self.failed_signature_threshold)
 
         self.perc_failed_signatures = failed_signatures/(total_signatures+0.00000000000000001)
