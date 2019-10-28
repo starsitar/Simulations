@@ -238,7 +238,23 @@ a population of N virtual stakers, with K stakers being malicious.
     Pr(X = k) = \frac{{K \choose k} {N-K\choose n-k}}{{N \choose n}}
 \end{equation}
 
-Show analytical results in comparison with simulation
+Show analytical results in comparison with simulation?
+
+\subsection{Compromised Groups}
+We use the survival function of the hypergeometric distribution to determine
+the likelihood of a group of n members being compromised. To do this we evaluate
+the function at the max malicious threshold. (in the sim we have a separate compromised threshold)
+
+\subsection{Node Attrition, Failures, and Inactivity}
+We model Node attrition and failures as Binomial, and Inactivity as a function of 
+the two.
+
+Describe mathematically....
+
+\subsection{Lynchpinned Signatures}
+
+
+\subsection{Failed Signatures}
 
 
 \section{Results}
@@ -250,7 +266,6 @@ appears to vary significantly and is dependent on the degree of concentration in
 stake distribution. 
 
 \subsection{Convergence pressures}
-
 The model primarily converges to steady state due to factors such as
 signature request frequency, node availability, and group creation/expiration. We discuss a few
 steady state values of interest.
@@ -279,8 +294,10 @@ taking the median measures of each variable, we hope to address the fluctuations
 increased centralization. 
 
 \textit{Group Size} in all distributions group size appears to reduce the percentage
-of lynchpinned signatures and compromised groups. Intuitively this makes since since 
-as we increase the size of a group, we include more group owners who may not be malicious. 
+of lynchpinned signatures but have no impact on compromised groups. Our defininition of compromised
+groups is independent of node failure's and therefore the variation shown is likeley not related to
+node failure.
+
 comment on degree of change?
 
 \textit{Node Failure percent} appears to significantly impact the lynchpinned signature percentage
@@ -412,8 +429,8 @@ centralized distributions.
             \end{center}
         \end{table}
 
-
-\section{Conclusion and Future work}
+\newpage
+\section{Conclusion and Future work}[h!]
 This theoretical analysis highlighted possible behaviors of the Keep network beacon. we
 validated the model using some simple analytical methods. However, once the beacon launches
 we can use real data from the network to validate and adjust the model. At this point we can
