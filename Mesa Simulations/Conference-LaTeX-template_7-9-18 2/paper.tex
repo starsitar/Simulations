@@ -226,7 +226,20 @@ Assumptions
 Model Assumptions
     
 \section{Verification and Validation}
-Benchmark using analytical methods - from Promethea
+Where possible, we use analytical methods to verify aspects of the sim. In the absence of 
+real world data, this is our best way to increase confidence in simulation results.
+
+\subsection{Group Selection}
+We model group selection using a hypergeometric distribution. For our purposes, we assume the n draws to 
+be the equivalent of selecting a group of n members, with k members being malicious. We draw the sample from
+a population of N virtual stakers, with K stakers being malicious. 
+
+\begin{equation}
+    Pr(X = k) = \frac{{K \choose k} {N-K\choose n-k}}{{N \choose n}}
+\end{equation}
+
+Show analytical results in comparison with simulation
+
 
 \section{Results}
 \subsection{Emergence of steady state behavior}
