@@ -125,7 +125,6 @@ class Signing_Group(Agent):
                 temp_malicious_count +=1
         self.malicious_percent = temp_malicious_count/sum(self.ownership_distr)
 
-
     def calculate_offline(self):
         offline_count = 0
         for node in self.members:
