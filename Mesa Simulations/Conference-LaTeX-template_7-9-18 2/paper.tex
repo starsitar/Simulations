@@ -233,18 +233,28 @@ real world data, this is our best way to increase confidence in simulation resul
 \subsection{Group Selection}
 We model group selection using a hypergeometric distribution. For our purposes, we assume the n draws to 
 be the equivalent of selecting a group of n members, with k members being malicious. We draw the sample from
-a population of N virtual stakers, with K stakers being malicious. 
+a population of N virtual stakers, with K stakers being malicious. For example, 
+\ref{fig: hypergeometric_distribution} shows a distribution for a group of 100 stakers. 
+Based on this distribution we would expect that the number of malicous stakers in this group
+would be between approx 20-40 stakers.
 
 \begin{equation}
     Pr(X = k) = \frac{{K \choose k} {N-K\choose n-k}}{{N \choose n}}
 \end{equation}
 
-Show analytical results in comparison with simulation?
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{hypergeometric.png}
+    \caption{Linear Stage Distribution}
+    \label{fig: hypergeometric_distribution}
+\end{figure}
+
 
 \subsection{Compromised Groups}
 We use the survival function of the hypergeometric distribution to determine
 the likelihood of a group of n members being compromised. To do this we evaluate
-the function at the max malicious threshold.
+the function at the max malicious threshold. Using our example above, we would
+expect the percentage of compromised groups to be approximateley 50 percent
+for a threshold of 25 percent. 
 
 \subsection{Node Attrition, Failures, and Inactivity}
 We model Node attrition and failures as Binomial, and Inactivity as a function of 
