@@ -29,24 +29,15 @@ antonio@keep.network}
 \IEEEauthorblockN{Promethea Raschke}
 \IEEEauthorblockA{\textit{Keep Network} \\
 promethea@keep.network}
-
-\and
-\IEEEauthorblockN{Markus Fix}
-\IEEEauthorblockA{\textit{Keep Network} \\
-markus@keep.network}
 }
 
 \maketitle
 
 \begin{abstract}
-    ABM is an effective tool for analysis of complex systems with long term 
-    emergent behavior. In this study we apply ABM to analyse the long term 
-    behavior of Keep’s random beacon. We look for the emergence of steady 
-    state behavior, at which point we evaluate the sensitivity of specific 
-    group and signature characteristics to various parameters. This study 
-    illustrates the effectiveness of ABM as an aid to the design 
-    of novel distributed systems. The team also intends to use this simulation
-    as a way to analyze Keep system behavior after launch.
+    Agent Based Modeling (ABM) is an effective tool for analysis of complex systems with long term  emergent behavior. Distributed systems that rely on token economics are such complex systems. The behavior of these systems is difficult to predict due to the the interaction of various agents with different incentives. In particular, agents with malicious motives could compromise the integrity of the system, and agent based modeling can help forecast possible attack scenarios.  
+In this study we apply ABM to analyze the long term behavior of Keep’s random beacon, which uses a threshold relay to generate and sign random numbers. The threshold relay is comprised of nodes that form groups which utilize a distributed key to sign each random number transaction. Nodes participate in groups by staking the Keep token, but since this is not a permissioned system nodes could be malicious and seek to compromise the integrity of the generated random number. 
+The goals of the simulation are to look for the emergence of steady state behavior, at which point we evaluate the sensitivity of specific group and signature characteristics to maliciousness. In particular we evaluate the impact of various token maliciousness on the successful creation of a signature. We attempt to verify and validate the sim using some analytical forecasting methods. 
+This study illustrates the effectiveness of ABM as an aid to the design of novel distributed systems. The team also intends to use this simulation as a way to analyze Keep system behavior after launch.
 
 \end{abstract}
 
@@ -87,7 +78,7 @@ environment to simulate Kadena's Chainweb, and provide insights into how simulat
 and optimize protocol development in a variety of contexts.
 
 Discuss levels of complexity, with citations. Why greater complexity may
-not get you much more insight. (ask Shruti?)
+not get you much more insight. 
 
 \section{Overview of the Keep Random Beacon}
 The Keep Network random beacon uses a threshold relay simuliar to the one proposed
