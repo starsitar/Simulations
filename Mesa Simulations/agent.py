@@ -125,7 +125,6 @@ class Signing_Group(Agent):
                 temp_malicious_count +=1
         self.malicious_percent = temp_malicious_count/sum(self.ownership_distr)
 
-
     def calculate_offline(self):
         offline_count = 0
         for node in self.members:
@@ -147,7 +146,9 @@ class Signature(Agent):
         self.block_delay_complete = False
         self.lynchpin_percent = 0
         self.offline_percent = 0
-        self.owner_lynchpin_percent = 0
+        self.operator_lynchpin_percent = 0
+
+        self.model.newest_id +=1 # increments the model agent ID by 1 after a new signature is created 
 
         self.model.newest_id +=1 # increments the model agent ID by 1 after a new signature is created 
 
@@ -189,7 +190,7 @@ class Signature(Agent):
                 except:
                     shares_by_staker.update({self.model.active_nodes[node_id].node_operator : node_tickets})
                     
-        self.owner_lynchpin_percent = shares_by_staker[max(shares_by_staker)]/total_tickets
+        self.operator_lynchpin_percent = shares_by_staker[max(shares_by_staker)]/total_tickets
 
     
 

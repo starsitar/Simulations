@@ -37,10 +37,9 @@ class Beacon_Model(Model):
         self.unsuccessful_signature_events = []
         self.signature_delay = signature_delay
         self.dkg_block_delay = dkg_block_delay
-        self.compromised_threshold = compromised_threshold
         self.median_malicious_group_percents = 0
-        self.median_dominated_signatures_percents = 0
-        self.perc_dominated_signatures = 0
+        self.median_lynchpinned_signatures_percents = 0
+        self.perc_lynchpinned_signatures = 0
         self.perc_compromised_groups = 0
         self.total_signatures = 0
         self.failed_signature_threshold = failed_signature_threshold
@@ -53,8 +52,8 @@ class Beacon_Model(Model):
              "# of Signatures":"total_signatures",
              "Median Malicious Group %": "median_malicious_group_percents",
              "% Compromised Groups": "perc_compromised_groups",
-             "Median Lynchpin %":"median_dominated_signatures_percents",
-             "% Lynchpinned signatures":"perc_dominated_signatures",
+             "Median Lynchpin %":"median_lynchpinned_signatures_percents",
+             "% Lynchpinned signatures":"perc_lynchpinned_signatures",
              "Failed Singature %" : "perc_failed_signatures" },
             agent_reporters={"ID": "id" , 
             "Type" : "type",
@@ -222,23 +221,27 @@ class Beacon_Model(Model):
                 total_groups +=1
                 malicious_array.append(group.malicious_percent) #creates an array of malicious percents for each group
         self.median_malicious_group_percents = np.median(malicious_array)
-        self.perc_compromised_groups = sum(np.array(malicious_array)>=self.compromised_threshold)/(total_groups+0.000000000000000001)
+        self.perc_compromised_groups = sum(np.array(malicious_array)>=self.max_malicious_threshold_percent)/(total_groups+0.000000000000000001)
 
     def calculate_lynchpinned_signatures(self):
         lynchpin_array = []
+        operator_lynchpin_array = []
         lynchpin_count = 0
+        operator_lynchpin_count = 0
         total_signatures = 0
         failed_signatures = 0
         for signature in self.schedule.agents:
             if signature.type == "signature":
                 total_signatures +=1
-                lynchpin_array.append(signature.lynchpin_percent)
+                lynchpin_array.append(signature.operator_lynchpin_percent)
+                operator_lynchpin_array.append(signature.operator_lynchpin_percent)
                 lynchpin_count += (signature.lynchpin_percent>=self.max_malicious_threshold_percent)
+                operator_lynchpin_count += (signature.operator_lynchpin_percent>=self.max_malicious_threshold_percent)
                 failed_signatures += (signature.offline_percent>=self.failed_signature_threshold)
 
         self.perc_failed_signatures = failed_signatures/(total_signatures+0.00000000000000001)
-        self.median_dominated_signatures_percents = np.median(lynchpin_array)
-        self.perc_dominated_signatures = lynchpin_count/(total_signatures+0.00000000000000001)
+        self.median_lynchpinned_signatures_percents = np.median(lynchpin_array)
+        self.perc_lynchpinned_signatures = lynchpin_count/(total_signatures+0.00000000000000001)
         self.total_signatures = total_signatures
 
 
