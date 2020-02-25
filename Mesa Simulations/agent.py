@@ -150,6 +150,8 @@ class Signature(Agent):
 
         self.model.newest_id +=1 # increments the model agent ID by 1 after a new signature is created 
 
+        self.model.newest_id +=1 # increments the model agent ID by 1 after a new signature is created 
+
     def step(self):
         #signature
         if not self.block_delay_complete:

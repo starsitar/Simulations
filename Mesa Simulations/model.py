@@ -15,7 +15,7 @@ class Beacon_Model(Model):
     group_size, max_malicious_threshold_percent, group_expiry, 
     node_failure_percent, node_death_percent,
     signature_delay, min_nodes, node_connection_delay, node_mainloop_connection_delay, 
-    log_filename, run_number, dkg_block_delay,
+    log_filename, run_number, dkg_block_delay, compromised_threshold,
     failed_signature_threshold, min_stake_amount, operator_mode, malicious_operator_percent):
         self.num_nodes = 0
         self.schedule = SimultaneousActivation(self)
